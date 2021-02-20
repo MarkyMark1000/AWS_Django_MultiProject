@@ -25,7 +25,9 @@ SECRET_KEY = '=egyj=^9=*$-3sqz2q^x@kaygo^8^lm@m(hncpqej4rgeimxi&'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost",
+                 "127.0.0.1",
+                 "contsendemail-env.eba-kihs3gqn.eu-west-2.elasticbeanstalk.com"]
 
 
 # Application definition

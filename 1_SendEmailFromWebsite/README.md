@@ -25,6 +25,17 @@ Please see the following:
 
 > http://whitenoise.evans.io/en/stable/django.html
 
+### MAKEFILE
+
+---
+
+A makefile has been created to help simplify the running of the following sections:
+
+> TEST DJANGO LOCALLY
+
+> TEST DJANGO ON DOCKER
+
+It does not currently install or deploy this project to Lightsail or Elastic Beanstalk.
 
 ### TEST DJANGO LOCALLY
 
@@ -113,6 +124,7 @@ docker rm containerid_or_name
 docker images
 docker rmi imagename
 ```
+---
 
 ### INSTALLATION ONTO LIGHTSAIL
 
@@ -180,11 +192,15 @@ Hit save and deploy and then wait for it to finish deploying.
 
 Once it has finished deploying, you should be able to follow your public domain link from lightsail and see the website working on the other end.
 
+---
+
 ### INSTALLATION ONTO ELASTIC BEANSTALK
 
 ---
 
 ###### OVERVIEW
+
+---
 
 Firstly, move into the directory where the Dockerfile is located.
 
@@ -196,6 +212,8 @@ This Elastic Beanstalk installation procedure may add the following files and di
 - .gitignore
 
 ###### SETUP AND DEPLOYMENT
+
+---
 
 Initiate an Elastic Beanstalk App using a command similar to the following:
 
@@ -217,21 +235,25 @@ Check the localhost to ensure the website displays correctly:
   
 > http://127.0.0.1:8080  
 
-Next you need to create an Elastic Beanstalk environment by running something similar to the following:
+If you are re-deploying code to Elastic Beanstalk, I suggest you check the .elasticbeanstalk/config.yaml file to ensure the environment you are deploying to is correct.  
+
+Either create a new Elastic Beanstalk or deploy to an existing environment using the appropriate command from the following:
 
 ```
 eb create contsendemail-env
 ```
 
-Check Elastic Beanstalk to ensure the environment is created successfully.
+```
+eb deploy
+```
 
-You will need to get the domain name from elastic beanstalk, then update the LOCAL_HOSTS in the settings.py file of the sendemail project with the appropriate domain from the elastic beanstalk environment, eg:
+If you have created the environment for the first time, you will need to update the LOCAL_HOSTS in the settings.py file of the sendemail project with the appropriate domain from the elastic beanstalk environment, eg:
 
 > "contsendemail-env.eba-kihs3gqn.eu-west-2.elasticbeanstalk.com"
 
 Within the .ebextensions directory, there is a file called environment.config.   This file initiates the DJANGO_DEBUG variable, so you may want to change this value depending on if you want to initiate the project in debug or production mode.
 
-Now redeploy using the following command:
+If necessary, redeploy using the following command:
 
 ```
 eb deploy
@@ -245,11 +267,13 @@ eb open
 
 This method of creating an elastic beanstalk environment will create a load balanced environment by default, which can be expensive, so I suggest you change the configuration quickly.   You may also wish to play around with what ec2 instances are used etc.
 
-### FURTHUR WORK
+---
+
+### FURTHER WORK
 
 ---
 
-This document was intended to be a start project that can be installed at a relatively low cost on AWS Lightsail or AWS Elastic Beanstalk.   I have used these systems because you can avoid the use of Load Balancers, which are expensive and add very little benefit when you creating a test/trial site, however this project has lots of area's that could be improved.   Some of these topics are mentioned below:
+This document was intended to be a start project that can be installed at a relatively low cost on AWS Lightsail or AWS Elastic Beanstalk.   I have used these systems because you can avoid the use of Load Balancers, which are expensive and have very little benefit when you creating a test/trial site, however this project has lots of area's that could be improved.   Some of these topics are mentioned below:
 
 ###### HTTPS
 

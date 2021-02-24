@@ -1,0 +1,170 @@
+ /*================================================
+        Global
+==================================================*/
+* {
+    -webkit-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+    text-decoration: none !important;
+    /*
+    This was in the original template, but has been removed because it turn's off list decoration.
+    If this causes problems, I may need to re-instate it.
+    list-style: none !important;
+    */
+    outline: none !important;
+}
+
+:focus {
+    outline: none;
+  }
+
+/* Necessary to get footer at bottom */
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/*================================================
+        Navbar
+==================================================*/
+
+/*
+CSS for the animated hamburger icon for bootstrap (with some small adjustments):
+https://jsfiddle.net/Beaniie/s8rm1f0q/5/
+Also see this for bootstrap 3:
+https://codepen.io/impondesk/pen/EaKoXY
+*/
+.navbar-toggler {
+    border: none;
+    background: transparent !important;
+  }
+  
+  .navbar-toggler:focus {
+    outline: none;
+    background: transparent !important;
+  }
+  
+  .navbar-toggler .icon-bar {
+    background-color: #8e8e8e;
+    transform: rotate(0deg) translate(0px, 0px);
+    transition: ease all .2s;
+  }
+  
+  .navbar-toggler .icon-bar {
+    display: block;
+    width: 22px;
+    height: 2px;
+    border-radius: 1px;
+  }
+  
+  .navbar-toggler .icon-bar+.icon-bar {
+    margin-top: 4px;
+  }
+  
+  .icon-bar:nth-child(2) {
+    width: 18px;
+    margin-left: 2px;
+    transition: ease all .2s;
+  }
+  
+  .navbar-toggler:not(.collapsed) .icon-bar:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 4px);
+    transition: ease all .2s;
+  }
+  
+  .navbar-toggler:not(.collapsed) .icon-bar:nth-child(2) {
+    opacity: 0;
+    transition: ease all .2s;
+  }
+  
+  .navbar-toggler:not(.collapsed) .icon-bar:nth-child(3) {
+    transform: rotate(-45deg) translate(4px, -4px);
+    transition: ease all .2s;
+  }
+  
+  /* I have taken the bootstrap bg-danger as a template and then adjusted the colours */
+  .bg-black{
+      background-color:black!important;
+  }
+  a.bg-black:focus, a.bg-black:hover, button.bg-black:focus, button.bg-black:hover{
+      background-color:blue!important;
+  }
+  .bg-blackfade{
+      background-color:black!important;
+      background-image: linear-gradient(to right,rgba(0,0,0,1) 0%,rgba(2, 1, 65) 100%)!important;
+  }
+  a.dropdown-item:hover{
+    color: #fff!important;
+  }
+  
+  .logo-1{
+    max-width: 60px;
+    height: auto;
+  }
+  .img-pm{
+    /* used in apps.   set for powermapper.com report */
+    max-width: 100%;
+    height: auto;
+  }
+  /* dropdown-dark */
+  /* I have taken the bootstrap navbar-dark as a template and then created a dropdown-dark*/
+  .menu-color{
+      color:rgba(255,255,255,.5);
+  }
+  .menu-color:not(span){
+      /*format the text next to the fa search icon*/
+      font-size: 13px;
+      color: #8e8e8e;
+      padding: 10px 10px;
+      text-transform: uppercase;
+      font-family: 'Raleway', sans-serif;
+      letter-spacing: 1px;
+      text-align: center;
+      font-weight: 500;
+  }
+  .menu-color:focus, .menu-color:hover{
+      color:rgba(255,255,255,.75);;
+      background-color: transparent;
+  }
+  .dropdown-dark a, .dropdown-dark a i {
+      color:rgba(255,255,255,.5);
+  }
+  .dropdown-dark a:focus, .dropdown-dark a:hover{
+      color:rgba(255,255,255,.5);
+      background-color: transparent;
+  }
+  
+  .nav-item.dropdown a:focus{
+      outline:none;
+  }
+  
+  .navbar-nav .nav-item .nav-link{
+      font-size: 13px;
+      color: #8e8e8e;
+      padding: 10px 10px;
+      -webkit-transition: .3s;
+      transition: .3s;
+      text-transform: uppercase;
+      font-family: 'Raleway', sans-serif;
+      letter-spacing: 1px;
+      text-align: center;
+      font-weight: 500;
+  }
+  
+  .navbar-nav .nav-item .dropdown-menu a{
+      font-size: 13px;
+      color: #8e8e8e;
+      font-family: 'Raleway', sans-serif;
+      letter-spacing: 1px;
+      font-weight: 500;
+      border-style: solid;
+      border-width: 0px 0px 1px 0px;
+      border-color: rgba(255,255,255,.25);
+  }
+  .navbar-nav .nav-item .dropdown-menu a:last-child{
+      border-style: none;
+  }
+  .navbar-nav .nav-item a i.fa-angle-down{
+      margin: 3px 0px 0px 5px;
+  }

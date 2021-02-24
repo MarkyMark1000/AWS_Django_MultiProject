@@ -1,6 +1,30 @@
 # OVERVIEW
 
-This is a project that can be installed on AWS Lightsail or AWS Elastic Beanstalk.   When setup you should be able to enter an email address in a field and then an email will be sent to that address.
+This is a project that can be installed on AWS Lightsail or AWS Elastic Beanstalk.   It is designed around the use of Django containers, not the Django or Python environments available on these platforms.   When setup you should be able to enter an email address in a field and then an email will be sent to that address.
+
+### A NOTE ON STATIC FILES
+
+---
+
+When using AWS it is possible to specify options for the Django or Python environments to specify where to get the static files.   This is not available for the deployment of containers onto Lightsail or Elastic Beanstalk.   I have spent some time trying to get around this and tried the following:
+
+- Adjusting Nginx and .ebextensions to enable static file deployment from a different folder.
+- Adding the static files to an S3 instance.
+
+After some trial and error, I found that the use of whitenoise is much easier to setup and so decided to progress with this option.   It creates new file versions when necessary and deploys static files effectively.
+
+Please note that DJANGO_DEBUG must be set to False for this to work properly, otherwise it does not deploy the versioned files.
+
+There are also some adjustments made to the settings.py file to get this to work.  
+
+The collected static files are saved in the 'staticfiles' directory.
+
+Please see the following:
+
+> http://whitenoise.evans.io/en/stable/
+
+> http://whitenoise.evans.io/en/stable/django.html
+
 
 ### TEST DJANGO LOCALLY
 
@@ -17,24 +41,38 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-2 - Run any necessary migrations:
+2 - Set Django Debug to False.
+
+```
+export DJANGO_DEBUG='False'
+```
+
+3 - Collect the static files:
+
+```
+python3 manage.py collectstatic --noinput
+```
+(files are copied to staticfiles directory)
+
+4 - Run any necessary migrations:
 
 ```
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-3 - Run the server:
+5 - Run the server:
 
 ```
-python manage.py runserver 8080
+python manage.py runserver 8080 --nostatic
 ```
+(--nostatic, ensures server is consistent with whitenoise)
 
-4 - Goto the localhost site:
+6 - Goto the localhost site:
 
 > http://localhost:8080  
 or  
-> http://127.0.0.1:8080  
+> http://127.0.0.1:8080
 
 ### TEST DJANGO ON DOCKER
 
@@ -57,7 +95,7 @@ docker images
 4 - Run the docker image:
 
 ```bash
-docker run -p 8080:8080 mjw/sendemail
+docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/sendemail
 ```
 
 5 - Then look at the appropriate localhost site:
@@ -94,6 +132,13 @@ Get the domain from lightsail and update the ALLOWED_HOSTS in the settings.py fi
 
 You need to create a docker image and test it as mentioned previously.
 
+```
+docker build -t mjw/sendemail .
+```
+```  
+docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/sendemail
+```
+
 Use the following command to get the REPOSITORY and TAG for the docker image that you just created:
 
 ```
@@ -113,7 +158,7 @@ You should now have an image available on lightsail if you refresh the screen an
 
 Within lightsail, goto 'Deployments' and then 'Create your first deployment'.
 
-Get the container a name, eg:
+Give the container a name, eg:
 
 > "cont-sendemail"
 
@@ -121,7 +166,11 @@ and under the image, uset the new image that has been sent to lightsail, eg:
 
 > ":django-sendemail.sendemail.4"
 
-Add an open port of 8080 to HTTP.
+Add the following environment variables:
+
+> DJANGO_DEBUG => False
+
+Also, add an open port of 8080 to HTTP.
 
 Within your public endpoint, select your container name from the combo box, eg:
 
@@ -135,11 +184,20 @@ Once it has finished deploying, you should be able to follow your public domain 
 
 ---
 
+###### OVERVIEW
+
 Firstly, move into the directory where the Dockerfile is located.
 
-This installation does not use Dockerhub or any other repository to make the installation simple, however it is dependent upon the Dockerrun.aws.json file in the remote-docker directory, so I suggest you take a look at this.
+This installation does not use Dockerhub or any other repository to make the installation simple, however it is dependent upon the Dockerrun.aws.json file in the remote-docker directory, so I suggest you take a look at this.  
 
-You then need to initiate an Elastic Beanstalk App using a command similar to the following:
+This Elastic Beanstalk installation procedure may add the following files and directories.   They can be deleted to clean things up, but it is worth checking the files to ensue that when you re-deploy, you send it to the correct region, environment etc:
+- .elasticbeanstalk  
+- .dockerignore  
+- .gitignore
+
+###### SETUP AND DEPLOYMENT
+
+Initiate an Elastic Beanstalk App using a command similar to the following:
 
 ```
 eb init -i -p docker contSendEmailApp
@@ -150,7 +208,7 @@ You may be asked to select some setup details such as which region you want to s
 You can now test the docker image in your local environment by using the following command:
 
 ```
-eb local run --port 8080
+eb local run --envvars DJANGO_DEBUG="False" --port 8080
 ```
 
 Check the localhost to ensure the website displays correctly:
@@ -167,17 +225,13 @@ eb create contsendemail-env
 
 Check Elastic Beanstalk to ensure the environment is created successfully.
 
-You will need to either get the domain name from elastic beanstalk or use the following command to get the domain name:
-
-```
-eb open
-```
-
-Then update the LOCAL_HOSTS in the settings.py file of the sendemail project with the appropriate domain from the elastic beanstalk environment, eg:
+You will need to get the domain name from elastic beanstalk, then update the LOCAL_HOSTS in the settings.py file of the sendemail project with the appropriate domain from the elastic beanstalk environment, eg:
 
 > "contsendemail-env.eba-kihs3gqn.eu-west-2.elasticbeanstalk.com"
 
-Then redeploy using the following command:
+Within the .ebextensions directory, there is a file called environment.config.   This file initiates the DJANGO_DEBUG variable, so you may want to change this value depending on if you want to initiate the project in debug or production mode.
+
+Now redeploy using the following command:
 
 ```
 eb deploy
@@ -191,24 +245,29 @@ eb open
 
 This method of creating an elastic beanstalk environment will create a load balanced environment by default, which can be expensive, so I suggest you change the configuration quickly.   You may also wish to play around with what ec2 instances are used etc.
 
-### INSTALLATION ONTO ELASTIC BEANSTALK
+### FURTHUR WORK
 
 ---
 
-The Elastic Beanstalk installation creates a set of directories and files that you can delete if you remove the Elastic Beanstalk environment and app:
+This document was intended to be a start project that can be installed at a relatively low cost on AWS Lightsail or AWS Elastic Beanstalk.   I have used these systems because you can avoid the use of Load Balancers, which are expensive and add very little benefit when you creating a test/trial site, however this project has lots of area's that could be improved.   Some of these topics are mentioned below:
 
-.elasticbeanstalk  
-.dockerignore  
-.gitignore  
+###### HTTPS
 
-This project also has a tendency to leave docker images and containers around, so these basic commands may be useful:
+At present I have not tried https on Lightsail, but it looks relatively easy to install, however HTTPS can be difficult to setup on a Single Instance Elastic Beanstalk environment (it is easy on a Load Balanced environment).   There are ways around this, perhaps including a lightsail loadbalancer.   These links may help:
 
-```
-docker ps -a
-docker stop containerid_or_name
-docker rm containerid_or_name
-docker images
-docker rmi imagename
-```
+> https://aws.amazon.com/premiumsupport/knowledge-center/elastic-beanstalk-https-configuration/
+> http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/configuring-https-elb.html
+> http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/https-singleinstance-python.html
+> https://lightsail.aws.amazon.com/ls/docs/en_us/articles/create-lightsail-load-balancer-and-attach-lightsail-instances
 
-Don't forget to delete the Elastic Beanstalk and/or Lightsail environment if you don't use it.   They may be costing you money.
+###### UNITTESTS AND CODEPIPELINE
+
+This project has been setup to help initiate a development environment and I have excluded any adjustments for code pipeline.   The installation instructions are very manual, but can be setup relatively easily and I think that it provides a good foundation for initiating a project.
+
+A naturaly extension for this is to add a set of unit tests and incorporate the project into code pipeline.   I think this system is brilliant when setup correctly.   You check your project into github or code commit and then the code is extracted, tests are run and then it is deployed into a production/test environment.
+
+https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html
+
+###### ECS AND FARGATE
+
+ECS and FARGATE are very interesting systems for large scale projects, however at present it is not possible to setup an elastic ip address on fargate.   Load balancers are expensive, so I have avoided using this at present.

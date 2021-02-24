@@ -114,3 +114,17 @@ GitHub.sublime-settings
 !.vscode/launch.json 
 !.vscode/extensions.json 
 .history
+
+# DS_Store
+.DS_STORE
+
+# Do not track static files under the parent project,
+# the .elasticbeanstalk directory, .dockerignore or
+# .gitignore in sub directory.
+1_SendEmailFromWebsite/staticfiles
+1_SendEmailFromWebsite/.elasticbeanstalk
+1_SendEmailFromWebsite/.dockerignore
+1_SendEmailFromWebsite/.gitignore
+
+# Do not track any backup files
+BACKUP_FILES

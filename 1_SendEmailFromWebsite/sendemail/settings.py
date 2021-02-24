@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,11 +24,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = '=egyj=^9=*$-3sqz2q^x@kaygo^8^lm@m(hncpqej4rgeimxi&'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = (os.environ.get('DJANGO_DEBUG', "False")=="True")
+print(f'DJANGO_DEBUG: {DEBUG}')
 
 ALLOWED_HOSTS = ["localhost",
                  "127.0.0.1",
-                 "contsendemail-env.eba-kihs3gqn.eu-west-2.elasticbeanstalk.com"]
+                 "django-sendemail.6hbnjaadkuqb2.eu-west-2.cs.amazonlightsail.com", # lightsail
+                 "contsendemail-env.eba-mmwrva77.eu-west-2.elasticbeanstalk.com"] # elastic beanstalk
 
 
 # Application definition
@@ -43,6 +46,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',       # mjw - whitenoise
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -56,7 +60,7 @@ ROOT_URLCONF = 'sendemail.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ["sendemail/templates/"],         # MJW Update
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -105,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-gb'
 
 TIME_ZONE = 'UTC'
 
@@ -119,4 +123,12 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
+
+# mjw - lots of these have been adjusted for whitenoise:
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# mjw - necessary to get collect static to look in sendemail dir
+STATICFILES_DIRS = [
+    './sendemail/static/',
+]

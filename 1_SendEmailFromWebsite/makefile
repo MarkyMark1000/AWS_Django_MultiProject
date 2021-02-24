@@ -6,7 +6,7 @@ SHELL:=/bin/bash
 #Set help as the default for this makefile.
 .DEFAULT: help
 
-.PHONY: clean help
+.PHONY: clean help venv
 
 help:
 	@echo ""
@@ -14,7 +14,7 @@ help:
 	@echo "make               		- this prints out the help for this makefile."
 	@echo "make help          		- this prints out the help for this makefile."
 	@echo "Clean:"
-	@echo "make clean	    		- Remove .py files, venv, coverage etc."
+	@echo "make clean	    		- DANGER - remove .py files, venv, coverage etc."
 	@echo "Virtual Env:"
 	@echo "make venv	    		- Make the virtual environment."
 	@echo "Run:"
@@ -25,7 +25,7 @@ clean:
 	@echo ""
 	@echo "*** clean ***"
 	@echo ""
-	(rm -rf venv; rm -rf *.pyc; rm -rf *_pycache_*; )
+	(rm -rf venv; rm -rf *.pyc; find . -type d -name  "__pycache__" -exec rm -r {} +; )
 	(rm -rf htmlcov; rm -rf .coverage;)
 	(rm -rf .elasticbeanstalk; rm -rf .dockerignore; rm -rf .gitignore;)
 	(rm -rf db.sqlite3; )
@@ -35,7 +35,7 @@ venv:
 	@echo ""
 	@echo "*** make virtual env ***"
 	@echo ""
-	(rm -rf venv; python3 -m venv venv; source venv/bin/activate; pip3 install -m requirements.txt; )
+	(rm -rf venv; python3 -m venv venv; source venv/bin/activate; pip3 install -r requirements.txt; )
 	@echo ""
 
 run-local:

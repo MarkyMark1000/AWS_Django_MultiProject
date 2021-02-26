@@ -4,6 +4,42 @@
 
 {% block main %}
 
-    This is the front page.
+    <!-- ==== Start Form ==== -->
+    <div class="container">
+        <form class="pagesection rounded border shadow-lg" method="post" action="{% url 'frontend' %}">
+
+            {% csrf_token %}
+
+            {% comment %} ADD ERRORS TO FORM {% endcomment %}
+            {% if form.errors %}
+                <div class="row justify-content-center">
+                    <div class="text-danger my-1 col-10 col-md-8">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                {{ error|escape }}; 
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            {{ error|escape }}; 
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% comment %} ADD MAIN CONTENT OF FORM {% endcomment %}
+            <div class="row justify-content-center">
+                <div class="mt-5 col-10 col-md-8">
+                    {{ form.form_email }}
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-12">
+                    <input type="submit" class="btn btn-down-email" value="Send">
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <!-- ==== End Form ==== -->
 
 {% endblock %}

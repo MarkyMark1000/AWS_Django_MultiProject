@@ -18,6 +18,7 @@ help:
 	@echo "Virtual Env:"
 	@echo "make venv	    		- Make the virtual environment."
 	@echo "Run:"
+	@echo "make run-local-debug	    	- Run project locally in debug mode"
 	@echo "make run-local	    		- Run project locally"
 	@echo "make run-dock	    		- Run project using docker"
 
@@ -36,6 +37,16 @@ venv:
 	@echo "*** make virtual env ***"
 	@echo ""
 	(rm -rf venv; python3 -m venv venv; source venv/bin/activate; pip3 install -r requirements.txt; )
+	@echo ""
+
+run-local-debug:
+	@echo ""
+	@echo "*** run project locally in debug mode ***"
+	@echo "  (warning no collection of static)"
+	@echo ""
+	@echo "   http://localhost:8080"
+	@echo ""
+	( source venv/bin/activate; export DJANGO_DEBUG='True'; python3 manage.py collectstatic --noinput; python manage.py makemigrations; python manage.py migrate; python manage.py runserver 8080 --nostatic; )
 	@echo ""
 
 run-local:

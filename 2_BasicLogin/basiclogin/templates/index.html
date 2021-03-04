@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block main %}
+
+    <div class="container">
+        <div class="pagesection rounded border shadow-lg">
+
+            Hello, {{ user.username|default:'Guest' }}!
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block styles %}
+
+    <!-- Login_App Styles -->
+    <link href="{% static 'login_app/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'login_app/css/responsive.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block main %}
+
+    {% comment %}
+    This template displays the logout page, which is based upon the
+    Django default templates.
+    {% endcomment %}
+
+    <div class="container">
+        <div class="pagesection rounded-lg border shadow-lg pt-5 pb-3 px-5">
+
+            <h3 class="text-secondary text-center mb-5">
+                You have successfully logged out.
+            </h3>
+
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views import View
-from sendemail.forms import SendEmailForm
+from basiclogin.forms import SendEmailForm
 import boto3
 from botocore.exceptions import ClientError
 from django.core.exceptions import SuspiciousOperation, ValidationError
@@ -14,8 +14,8 @@ class FrontEndView(View):
         sender_email = form.cleaned_data['form_email']
 
         # Generate the new email message
-        strNewSubject = "CONTACT FROM sendemail DJANGO APP"
-        strNewMessage = f"Hello from a random user of sendemail Django App."
+        strNewSubject = "CONTACT FROM basiclogin DJANGO APP"
+        strNewMessage = f"Hello from a random user of basiclogin Django App."
 
         # Please note that your role needs access to SES
         # for this to work.

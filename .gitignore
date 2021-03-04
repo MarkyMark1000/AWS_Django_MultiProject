@@ -3,7 +3,7 @@
 *.pot
 *.pyc
 __pycache__
-db.sqlite3
+d*.sqlite3
 media
 
 # Backup files # 
@@ -121,10 +121,11 @@ GitHub.sublime-settings
 # Do not track static files under the parent project,
 # the .elasticbeanstalk directory, .dockerignore or
 # .gitignore in sub directory.
-1_SendEmailFromWebsite/staticfiles
-1_SendEmailFromWebsite/.elasticbeanstalk
-1_SendEmailFromWebsite/.dockerignore
-1_SendEmailFromWebsite/.gitignore
+migrations/
+staticfiles/
+.elasticbeanstalk/
+.dockerignore
+.gitignore
 
 # Do not track any backup files
 BACKUP_FILES

@@ -1,0 +1,31 @@
+
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block styles %}
+
+    <!-- Login_App Styles -->
+    <link href="{% static 'login_app/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'login_app/css/responsive.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block main %}
+
+    <div class="container">
+        <div class="pagesection rounded-lg border shadow-lg py-3 px-5">
+
+            {% comment %}
+            After registering a new account, we go to this page to
+            indicate that an activation email was sent.
+            {% endcomment %}
+
+            <h3 class="text-secondary text-center mb-5">
+                Activation link sent! Please check your console or mail.
+            </h3>
+
+        </div>
+    </div>
+
+{% endblock %}

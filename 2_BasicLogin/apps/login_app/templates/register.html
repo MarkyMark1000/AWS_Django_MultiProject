@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block styles %}
+
+    <!-- Login_App Styles -->
+    <link href="{% static 'login_app/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'login_app/css/responsive.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block main %}
+
+    {% comment %}
+    Form for registering a new user.   It uses the extended form
+    in forms.py
+    {% endcomment %}
+
+    <div class="container">
+        <div class="pagesection rounded-lg border shadow-lg pt-3 pb-3 px-5">
+
+            <h3 class="text-secondary text-center mb-4">
+                Register New User
+            </h3>
+
+            {% comment %} ADD ERRORS TO FORM {% endcomment %}
+            <form method="post">
+
+                {% csrf_token %}
+
+                {% for error in form.non_field_errors %}
+                    <p class="text-center text-danger">
+                        {{ error|escape }};
+                    </p>
+                {% endfor %}
+
+                {% for field in form %}
+                    <p>
+                        {{ field.label }}
+                        {{ field }}
+                    </p>
+                    {% for error in field.errors %}
+                        <p class="text-center text-danger">
+                            {{ error|escape }};
+                        </p>
+                    {% endfor %}
+                {% endfor %}
+
+                <!-- FORM SUBMIT -->
+                <input class="mt-5 mb-4" type="submit" value="Register">
+
+            </form>
+
+        </div>
+    </div>
+
+{% endblock %}

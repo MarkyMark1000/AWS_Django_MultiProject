@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    {% load static %}
+
+    <head>
+
+        <title>Send Email via AWS and Django</title>
+
+        <!-- meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content="Send Email via AWS Website">
+        <meta name="keywords" content="AWS, Email, Python, Django">
+        <meta name="author" content="M Wilson">
+
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+        <!-- Bootstrap js -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+        <!-- Custom Main Project Styles -->
+        <link href="{% static "basiclogin/css/style.css" %}" rel="stylesheet">
+        <link href="{% static "basiclogin/css/responsive.css" %}" rel="stylesheet">
+
+        {% comment %} add style sheet for apps {% endcomment %}
+        {% block styles %}{% endblock %}
+
+    </head>
+
+    <body>
+
+        <!-- ====== start header ======  -->
+        <nav class="navbar navbar-expand-sm bg-darkfade navbar-dark fixed-top">
+            <!-- navbar-brand -->
+            <a class="navbar-brand pt-0" href="{% url 'frontend' %}">
+                <img class="logo-1" src="{% static 'basiclogin/img/logo.png' %}" alt="Send Email Image">
+            </a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'frontend' %}">Home</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'password_change' %}">Change Password</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'password_reset' %}">Reset Password</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        <!-- ====== end header ======  -->
+
+        <main>
+            <!--Main Block where the data goes-->
+            {% block main %}{% endblock %}
+        </main>
+
+    </body>
+</html>

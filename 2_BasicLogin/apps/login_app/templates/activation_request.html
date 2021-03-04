@@ -1,0 +1,12 @@
+{% comment %}
+This is what appears in the console after you register a new
+user when the BACKEND_EMAIL is set to ..console...
+{% endcomment %}
+
+{% autoescape off %}
+Hi {{ user.username }},
+
+Please click the following link to confirm your registration:
+
+http://{{ domain }}{% url 'activate' uidb64=uid token=token %}
+{% endautoescape %}

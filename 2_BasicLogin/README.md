@@ -2,6 +2,20 @@
 
 This is a project that can be installed on AWS Lightsail or AWS Elastic Beanstalk.   It is designed around the use of Django containers, not the Django or Python environments available on these platforms.   When setup you should be able to enter an email address in a field and then an email will be sent to that address.
 
+### NOTES FOR THIS PROJECT
+
+---
+
+- Password Validators in the settings.py file.
+- Create a superuser
+- Mention I found difficult without password validator and didn't
+  like the default ones, so wrote my own.
+- I believe problems exists if you don't use Profile model.
+- Mention following tutorial:
+  https://dev.to/coderasha/create-advanced-user-sign-up-view-in-django-step-by-step-k9m
+
+
+
 ### A NOTE ON STATIC FILES
 
 ---
@@ -121,7 +135,7 @@ or
 2 - Run the following, using any desired replacements in the name, to build an image:
 
 ```
-docker build -t mjw/sendemail .
+docker build -t mjw/basiclogin .
 ```
 
 3 - You should then have a docker image, you can have a look at these using the following command:
@@ -133,7 +147,7 @@ docker images
 4 - Run the docker image:
 
 ```bash
-docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/sendemail
+docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/basiclogin
 ```
 
 5 - Then look at the appropriate localhost site:
@@ -161,21 +175,21 @@ First, create a lightsail container project.   I would recommend using a Micro w
 
 Do not setup a deployment yet, but call your service something like this:
 
-> django-sendemail
+> django-basiclogin
 
 We are going to set this up using 'My Local Machine' and there are some advanced instructions on lightsail about how to do this.
 
-Get the domain from lightsail and update the ALLOWED_HOSTS in the settings.py file of the sendemail project.   It should look something like this:
+Get the domain from lightsail and update the ALLOWED_HOSTS in the settings.py file of the basiclogin project.   It should look something like this:
 
-> "django-sendemail.6hbnjaadkuqb2.eu-west-1.cs.amazonlightsail.com"
+> "django-basiclogin.6hbnjaadkuqb2.eu-west-1.cs.amazonlightsail.com"
 
 You need to create a docker image and test it as mentioned previously.
 
 ```
-docker build -t mjw/sendemail .
+docker build -t mjw/basiclogin .
 ```
 ```  
-docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/sendemail
+docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/basiclogin
 ```
 
 Use the following command to get the REPOSITORY and TAG for the docker image that you just created:
@@ -187,23 +201,23 @@ docker images
 Now run the aws command line to push the docker image onto lightsail.   The command should look something like this:
 
 ```
-aws lightsail push-container-image --region eu-west-1 --service-name django-sendemail --label sendemail --image mjw/sendemail:latest
+aws lightsail push-container-image --region eu-west-1 --service-name django-basiclogin --label basiclogin --image mjw/basiclogin:latest
 ```
-(mjw/sendemail and latest were the REPOSITORY and TAG)
+(mjw/basiclogin and latest were the REPOSITORY and TAG)
 
 You should now have an image available on lightsail if you refresh the screen and it will have a name similar to the following:
 
-> ":django-sendemail.sendemail.4"
+> ":django-basiclogin.basiclogin.4"
 
 Within lightsail, goto 'Deployments' and then 'Create your first deployment'.
 
 Give the container a name, eg:
 
-> "cont-sendemail"
+> "cont-basiclogin"
 
 and under the image, uset the new image that has been sent to lightsail, eg:
 
-> ":django-sendemail.sendemail.4"
+> ":django-basiclogin.basiclogin.4"
 
 Add the following environment variables:
 
@@ -213,7 +227,7 @@ Also, add an open port of 8080 to HTTP.
 
 Within your public endpoint, select your container name from the combo box, eg:
 
-> "cont-sendemail"
+> "cont-basiclogin"
 
 Hit save and deploy and then wait for it to finish deploying.
 
@@ -245,7 +259,7 @@ This Elastic Beanstalk installation procedure may add the following files and di
 Initiate an Elastic Beanstalk App using a command similar to the following:
 
 ```
-eb init -i -p docker contSendEmailApp
+eb init -i -p docker contBasicLoginApp
 ```
 
 You may be asked to select some setup details such as which region you want to set this up in and if you want to use an SSH key.   Check AWS Elastic Beanstalk to ensure the App has been created.
@@ -267,16 +281,16 @@ If you are re-deploying code to Elastic Beanstalk, I suggest you check the .elas
 Either create a new Elastic Beanstalk or deploy to an existing environment using the appropriate command from the following:
 
 ```
-eb create contsendemail-env
+eb create contbasiclogin-env
 ```
 
 ```
 eb deploy
 ```
 
-If you have created the environment for the first time, you will need to update the LOCAL_HOSTS in the settings.py file of the sendemail project with the appropriate domain from the elastic beanstalk environment, eg:
+If you have created the environment for the first time, you will need to update the LOCAL_HOSTS in the settings.py file of the basiclogin project with the appropriate domain from the elastic beanstalk environment, eg:
 
-> "contsendemail-env.eba-kihs3gqn.eu-west-1.elasticbeanstalk.com"
+> "contbasiclogin-env.eba-kihs3gqn.eu-west-1.elasticbeanstalk.com"
 
 Within the .ebextensions directory, there is a file called environment.config.   This file initiates the DJANGO_DEBUG variable, so you may want to change this value depending on if you want to initiate the project in debug or production mode.
 

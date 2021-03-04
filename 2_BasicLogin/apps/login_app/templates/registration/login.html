@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block styles %}
+
+    <!-- Login_App Styles -->
+    <link href="{% static 'login_app/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'login_app/css/responsive.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+{% block main %}
+
+    {% comment %}
+    This template displays the login page, which is based upon the
+    Django default templates.
+    {% endcomment %}
+
+    <div class="container">
+        <div class="pagesection rounded-lg border shadow-lg pt-5 pb-3 px-5">
+
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input class="mt-4 mb-1" type="submit" value="Login">
+            </form>
+
+            <div class="d-flex pt-0 pb-5">
+                <div class="p3 text-center">
+                    <a class="text-muted" href="{% url 'register' %}">
+                        Register
+                    </a>
+                </div>
+                <div class="ml-auto p3 text-center">
+                    <a class="text-muted" href="{% url 'password_reset' %}">
+                        Reset password
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}

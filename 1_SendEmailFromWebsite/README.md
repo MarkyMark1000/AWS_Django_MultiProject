@@ -13,7 +13,7 @@ When using AWS it is possible to specify options for the Django or Python enviro
 
 After some trial and error, I found that the use of whitenoise is much easier to setup and so decided to progress with this option.   It creates new file versions when necessary and deploys static files effectively.
 
-Please note that DJANGO_DEBUG must be set to False for this to work properly, otherwise it does not deploy the versioned files.
+Please note that DJANGO_DEBUG must be set to False for this to work properly, otherwise it does not deploy the versioned files.   That being said, it is easier to develop and debug when it is set to True.
 
 There are also some adjustments made to the settings.py file to get this to work.  
 
@@ -31,14 +31,35 @@ Please see the following:
 
 ---
 
-This project uses AWS SES (Simple Email Service) to send an email.   As such there are some security and setup considerations that need to be considered.
+AWS has quite extensive support for email.   It is possible to create email accounts, to assign specific accounts to a domain name such as webmaster@domain.com etc.   I did not want to setup a new domain and email system as if I was setting up a new business, so instead I have used a single gmail address, which I can use for testing purposes on multiple sites.   You may need to adjust this email address, which is found in the views.py file.   Also, if you want to know how to use SES in detail, try the following link and its associated tutorials and resources:
 
-- Elastic Beanstalk may not have access to SES and you may need to adjust the role (see elastic beanstalk environment -> configuration -> security) within IAM so that the EC2 instance can access SES.
+> https://aws.amazon.com/ses/
 
-- You may need to make some setup adjustments within LightSail to gain access to SES.
+As this project uses SES, I have highlighted some of the key points that need to be considered when setting this up and any appropriate links that may help.
+
+- Firstly, when I was using Elastic Beanstalk, I did not have access to SES.   I found that it was possible to adjust the security role that is assigned to Elastic Beanstalk (see the elastic beanstalk environment -> configuration -> security) so that it has access to SES.   This will require the use of IAM.
+
+- Secondly, when I was using AWS Lightsail, it did not have a role which could be adjusted so that it has access to SES.   After contacting AWS Support, they suggested setting up a seperate user and grant it permission to use SES (more can be found on this in the following two sections).
+
+- It is possible to send email's using Boto3 directly, but as mentioned previously this is difficult with lightsail.   However somebody has put a lot of effort into creating a backend mail system to be used with AWS, HOWEVER THIS SYSTEM REQUIRED ME TO SAVE SECURITY CREDENTIALS IN THE settings.py FILE.   For an overview on how to set this system up, please see the following:
+
+   > https://medium.com/hackernoon/the-easiest-way-to-send-emails-with-django-using-ses-from-aws-62f3d3d33efd
+
+- I decided to save my security credentials within a file and then import those credentials into the settings.py file.   The file that stores those security credentials is then added to .gitignore so that they are not published to a public repository.   If I was going to set this project up on another computer, then the following file would need to be recreated and setup appropriately:
+
+   > sendemail/extra_aws_code_or_config/ses_account.py
+
+   ```
+   AWS_SES_ACCESS_KEY_ID = '.......'
+   AWS_SES_SECRET_ACCESS_KEY = '......'
+   AWS_DEFAULT_REGION = 'eu-west-1'
+   AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
+   ```
+
+- If you plan to use a non-lightsail database, you may need to make some setup adjustments within LightSail.
    > https://lightsail.aws.amazon.com/ls/docs/en_us/articles/lightsail-how-to-set-up-vpc-peering-with-aws-resources
 
-- It is worth noting that SES does not necessarily send and receive emails in every region.   This code uses eu-west-1 (Ireland) because the code is replicated from another application which I have setup and works well for sending and receiving emails.   It is worth reviewing this list of acceptable email domains within the following link:
+- It is worth noting that SES does not necessarily send and receive emails in every region.   This system is designed to send emails, but if you are planning to extend it, you may wish to use a region which can also receive emails.   This code uses eu-west-1 (Ireland) because the code is replicated from another application which I have setup and works well for sending and receiving emails.   It is worth reviewing this list of acceptable email domains within the following link:
    > https://docs.aws.amazon.com/ses/latest/DeveloperGuide/regions.html
 
 - AWS May limit who you can send emails to.   You may need to research Sandbox and sending limit's in the following section:
@@ -48,21 +69,22 @@ This project uses AWS SES (Simple Email Service) to send an email.   As such the
 - There is lots more information on SES in the following link:
    > https://docs.aws.amazon.com/ses/latest/DeveloperGuide/Welcome.html
 
-- It is possible to make the application work from your local computer if the local configuration for the AWS CLI has been setup.   However, if you run the docker containers locally, they may not work when hitting the send button.   These links may be helpful:
-   > https://stackoverflow.com/questions/40415943/how-to-see-what-profile-is-default-with-cli
+- It is worth noting that this application can work on your local computer if the local configuration for the AWS CLI has been setup.   These links may be helpful:
+   > https://stackoverflow.com/questions/40415943/how-to-see-what-profile-is-default-with-cli  
+
    > https://www.thegeekstuff.com/2019/03/aws-configure-examples/
 
 ### MAKEFILE
 
 ---
 
-A makefile has been created to help simplify the running of the following sections:
+A makefile has been created to help simplify the running of repetitive commands.   It can be used to clean the environment, create a new virtual environment, run the code locally and run the code within Docker.:
 
-> TEST DJANGO LOCALLY
+> make
 
-> TEST DJANGO ON DOCKER
+> make help
 
-It does not currently install or deploy this project to Lightsail or Elastic Beanstalk.
+You may need to regularly clean up docker images and containers if you use this extensively.   The makefile does not currently install or deploy this project to Lightsail or Elastic Beanstalk.
 
 ### TEST DJANGO LOCALLY
 
@@ -79,7 +101,7 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-2 - Set Django Debug to False.
+2 - Set Django Debug to True or False.
 
 ```
 export DJANGO_DEBUG='False'
@@ -135,6 +157,7 @@ docker images
 ```bash
 docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/sendemail
 ```
+(*Please read the Dockerfile because DJANGO_DEBUG may not work depending upon how you set this file up.*)
 
 5 - Then look at the appropriate localhost site:
 
@@ -177,6 +200,7 @@ docker build -t mjw/sendemail .
 ```  
 docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/sendemail
 ```
+(*DJANGO_DEBUG may not be relevant and is dependent upon how the Dockerfile is setup.*)
 
 Use the following command to get the REPOSITORY and TAG for the docker image that you just created:
 
@@ -189,7 +213,7 @@ Now run the aws command line to push the docker image onto lightsail.   The comm
 ```
 aws lightsail push-container-image --region eu-west-1 --service-name django-sendemail --label sendemail --image mjw/sendemail:latest
 ```
-(mjw/sendemail and latest were the REPOSITORY and TAG)
+(*mjw/sendemail and latest were the REPOSITORY and TAG*)
 
 You should now have an image available on lightsail if you refresh the screen and it will have a name similar to the following:
 
@@ -201,11 +225,11 @@ Give the container a name, eg:
 
 > "cont-sendemail"
 
-and under the image, uset the new image that has been sent to lightsail, eg:
+and under the image, set the new image that has been sent to lightsail, eg:
 
 > ":django-sendemail.sendemail.4"
 
-Add the following environment variables:
+Lightsail containers may not accept environment variables.   Depending upon the setup of your docker file, you may want to add the following:
 
 > DJANGO_DEBUG => False
 
@@ -292,7 +316,7 @@ You can now open the website from Elastic Beanstalk, or use the following comman
 eb open
 ```
 
-This method of creating an elastic beanstalk environment will create a load balanced environment by default, which can be expensive, so I suggest you change the configuration quickly.   You may also wish to play around with what ec2 instances are used etc.
+This method of creating an elastic beanstalk environment will create a load balanced environment by default, which can be expensive, so I suggest you change the configuration quickly.   You may also wish to play around with what ec2 instances are used.   Alternatively you could make some adjustements to the .ebextensions directory to force a particular type of environment to be created.
 
 ---
 

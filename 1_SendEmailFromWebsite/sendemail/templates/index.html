@@ -27,11 +27,11 @@
                 </div>
             {% endif %}
 
-            {% if boto_error %}
+            {% if email_error %}
                 <!-- BOTO3 ERRORS -->
                 <div class="row justify-content-center">
                     <div class="text-danger my-1 col-10 col-md-8">
-                        {{ boto_error_description }}
+                        {{ email_error_description }}
                     </div>
                 </div>
             {% endif %}

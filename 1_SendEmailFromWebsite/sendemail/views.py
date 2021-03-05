@@ -4,54 +4,27 @@ from sendemail.forms import SendEmailForm
 import boto3
 from botocore.exceptions import ClientError
 from django.core.exceptions import SuspiciousOperation, ValidationError
+from django.core.mail import send_mail
 
+EMAIL_FROM_ADDRESS = 'mark.john.wilson@gmail.com'
 
 class FrontEndView(View):
 
     def __processForm(self, request, form, context):
 
         # Form is valid, get the data from the form
-        sender_email = form.cleaned_data['form_email']
+        send_email = form.cleaned_data['form_email']
 
         # Generate the new email message
         strNewSubject = "CONTACT FROM sendemail DJANGO APP"
         strNewMessage = f"Hello from a random user of sendemail Django App."
 
-        # Please note that your role needs access to SES
-        # for this to work.
-
-        # Create a new SES resource and specify a region.   SES is in
-        # eu-west-1 NOT eu-west-2
-        client = boto3.client('ses', region_name="eu-west-1")
-
-        # Try to send the email.
-        # Yahoo prevents you from sending via ses, so I am going to send
-        # an email to my yahoo from my gmail account.   At some point in
-        # the future, I need to adjust this once I have a proper domain,
-        # but I don't have time to do that yet. Both email addresses have
-        # been authorised in SES. I cannot send to external email addresses
-        # unless it is adjusted by AWS and I am not prepared to do this
-        # yet.   For this reason, I cannot currently respond to the sender.
-
-        tmpDestination = {'ToAddresses':
-                            ["mark_john_wilson@yahoo.co.uk", ], }
-        tmpMessage = {
-                'Body': {
-                    'Text': {
-                        'Charset': "UTF-8",
-                        'Data': strNewMessage,
-                    },
-                },
-                'Subject': {
-                    'Charset': "UTF-8",
-                    'Data': strNewSubject,
-                },
-            }
-        # Provide the contents of the email.
-        response = client.send_email(
-            Destination=tmpDestination,
-            Message=tmpMessage,
-            Source="mark.john.wilson@gmail.com"
+        # Use Django to send the email
+        send_mail(
+            strNewSubject,
+            strNewMessage,
+            EMAIL_FROM_ADDRESS,
+            [send_email]
         )
 
         # Email sent and no error's
@@ -64,8 +37,8 @@ class FrontEndView(View):
         form = SendEmailForm()
         context = {
                 'form': form,
-                'boto_error': False,
-                'boto_error_description': '',
+                'email_error': False,
+                'email_error_description': '',
         }
         return render(request, 'index.html', context=context)
 
@@ -74,17 +47,12 @@ class FrontEndView(View):
         # Generate and validate the form
         form = SendEmailForm(request.POST)
 
-
-        # ************************************
-        # DONT FORGET TO REMOVE LIGHTSAIL SERVICE ROLE PERMISSION ON MONDAY
-        # ************************************
-
         # Build a default context using the form and recaptcha keys.   Allow
         # room for an extra error
         context = {
                 'form': form,
-                'boto_error': False,
-                'boto_error_description': '',
+                'email_error': False,
+                'email_error_description': '',
         }
 
         if form.is_valid():
@@ -96,8 +64,8 @@ class FrontEndView(View):
 
             except Exception as Ex:
 
-                context['boto_error'] = True
-                context['boto_error_description'] = Ex.args[0]
+                context['email_error'] = True
+                context['email_error_description'] = Ex.args[0]
 
             # Form was invalid, so just post it without changing context
             return render(request, 'index.html', context=context)

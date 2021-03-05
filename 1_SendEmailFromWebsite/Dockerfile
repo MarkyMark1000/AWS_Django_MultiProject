@@ -6,7 +6,8 @@ ENV PYTHONUNBUFFERED 1
 
 # I have found that lightsail doesn't seem to pass in environment variables
 # to the container as I always get DJANGO_DEBUG False, even when I set it to
-# true.   Currently this is set in the ENTRYPOINT, but you could use this:
+# true.   Currently this is set in the ENTRYPOINT, but you could use this in
+# EB:
 # ENV DJANGO_DEBUG=$DJANGO_DEBUG
 
 EXPOSE 8080
@@ -38,5 +39,6 @@ RUN python3 manage.py migrate
 # the site.
 
 # Choose which method to use:
+
 # ENTRYPOINT export DJANGO_DEBUG='True'; python3 /code/manage.py runserver 0.0.0.0:8080
-ENTRYPOINT export DJANGO_DEBUG='True'; gunicorn --bind 0.0.0.0:8080 --workers 3 sendemail.wsgi
+ENTRYPOINT export DJANGO_DEBUG='False'; gunicorn --bind 0.0.0.0:8080 --workers 3 sendemail.wsgi

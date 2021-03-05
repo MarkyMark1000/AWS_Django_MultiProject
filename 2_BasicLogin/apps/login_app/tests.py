@@ -12,9 +12,6 @@ Mark
 Mark_john_wilson@yahoo.co.uk
 2_banana
 
-To Test:
-http://127.0.0.1:8080/login_app/reset/MQ/aizpru-f9904d8e493ec43100c574d0ef4d03e1/
-
 1 – Login when the account has not been setup with invalid credentials.   The response form should contain “Please enter a correct username and password”:
 	Templates Tested:   login.py
 

@@ -29,7 +29,7 @@ clean:
 	(rm -rf venv; rm -rf *.pyc; find . -type d -name  "__pycache__" -exec rm -r {} +; )
 	(rm -rf htmlcov; rm -rf .coverage;)
 	(rm -rf .elasticbeanstalk; rm -rf .dockerignore; rm -rf .gitignore;)
-	(rm -rf db.sqlite3; )
+	(rm -rf d*.sqlit*; )
 	@echo ""
 
 venv:

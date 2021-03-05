@@ -127,9 +127,10 @@ staticfiles/
 .dockerignore
 .gitignore
 
-# Do not send ses_account details to github.   It remains
-# local to your pc so the user has to set this up.   You
-# could remove this if using a private github account.
+# Do not send ses_account details or email_account details
+# to github.   It remains local to your pc so the user has
+# to set this up.   You could remove this if using a private
+# github account.
 ses_account.py
 
 # Do not track any backup files

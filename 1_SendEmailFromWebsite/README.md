@@ -31,7 +31,7 @@ Please see the following:
 
 ---
 
-AWS has quite extensive support for email.   It is possible to create email accounts, to assign specific accounts to a domain name such as webmaster@domain.com etc.   I did not want to setup a new domain and email system as if I was setting up a new business, so instead I have used a single gmail address, which I can use for testing purposes on multiple sites.   You may need to adjust this email address, which is found in the views.py file.   Also, if you want to know how to use SES in detail, try the following link and its associated tutorials and resources:
+AWS has quite extensive support for email.   It is possible to create email accounts, to assign specific accounts to a domain name such as webmaster@domain.com etc.   I did not want to setup a new domain and email system as if I was setting up a new business, so instead I have used a single gmail address, which I can use for testing purposes on multiple sites.   You may need to adjust this email address (see the following sections).   Also, if you want to know how to use SES in detail, try the following link and its associated tutorials and resources:
 
 > https://aws.amazon.com/ses/
 
@@ -50,8 +50,12 @@ As this project uses SES, I have highlighted some of the key points that need to
    > sendemail/extra_aws_code_or_config/ses_account.py
 
    ```
+   # SES Validated Email Address
+   EMAIL_FROM_ADDRESS = '.....@......com'
+   # Access Key for User with SES access
    AWS_SES_ACCESS_KEY_ID = '.......'
    AWS_SES_SECRET_ACCESS_KEY = '......'
+   # Region/Endpoint of SES
    AWS_DEFAULT_REGION = 'eu-west-1'
    AWS_SES_REGION_ENDPOINT = 'email.eu-west-1.amazonaws.com'
    ```

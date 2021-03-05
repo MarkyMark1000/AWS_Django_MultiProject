@@ -9,6 +9,10 @@ def appendIPToArray(inALLOWED_HOSTS):
     ALLOWED_HOSTS list, preventin unnecessary logs and health degredation.
     '''
 
+    # This may be difficult to unittest in a local environment because the
+    # URL 'http://169.254.169.254/latest/meta-data/local-ipv4' is
+    # specific to AWS.
+    
     try:
         # Try to get the IP
         EC2_PRIVATE_IP = requests.get('http://169.254.169.254/latest/meta-data/local-ipv4',

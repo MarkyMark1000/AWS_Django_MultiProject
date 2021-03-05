@@ -5,8 +5,7 @@ import boto3
 from botocore.exceptions import ClientError
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from django.core.mail import send_mail
-
-EMAIL_FROM_ADDRESS = 'mark.john.wilson@gmail.com'
+from sendemail.extra_code_or_config.ses_account import EMAIL_FROM_ADDRESS
 
 class FrontEndView(View):
 
@@ -56,7 +55,6 @@ class FrontEndView(View):
         }
 
         if form.is_valid():
-
             try:
 
                 self.__processForm(request, form, context)

@@ -12,11 +12,11 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-from sendemail.extra_aws_code_or_config.getIP import \
+from sendemail.extra_code_or_config.getIP import \
     appendIPToArray
 
 # Import Email Configuration for AWS Email
-from sendemail.extra_aws_code_or_config.ses_account import \
+from sendemail.extra_code_or_config.ses_account import \
     AWS_SES_ACCESS_KEY_ID, AWS_SES_SECRET_ACCESS_KEY, \
     AWS_DEFAULT_REGION, AWS_SES_REGION_ENDPOINT
 

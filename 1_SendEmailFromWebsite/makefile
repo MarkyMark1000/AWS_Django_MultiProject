@@ -21,6 +21,10 @@ help:
 	@echo "make run-local-debug	    	- Run project locally in debug mode"
 	@echo "make run-local	    		- Run project locally"
 	@echo "make run-dock	    		- Run project using docker"
+	@echo "Testing:"
+	@echo "make test   			- Run the Test in the virtual environment."
+	@echo "make cov-html			- Build HTML coverage report."
+	@echo ""
 
 clean:
 	@echo ""
@@ -66,4 +70,30 @@ run-dock:
 	@echo "   http://localhost:8080"
 	@echo ""
 	( docker build -t mjw/sendemail .; docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/sendemail; )
+	@echo ""
+
+run-tests:
+	@echo ""
+	@echo "*** run project locally on docker ***"
+	@echo "  (don't forget to clean up images/containers)"
+	@echo ""
+	@echo "   http://localhost:8080"
+	@echo ""
+	( docker build -t mjw/sendemail .; docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/sendemail; )
+	@echo ""
+
+test:
+	@echo ""
+	@echo "Running test in venv virtual environment."
+	@echo ""
+	@echo "   to debug, you could use the --keepdb option"
+	@echo ""
+	( source venv/bin/activate; python3 manage.py test --noinput; )
+	@echo ""
+
+cov-html:
+	@echo ""
+	@echo "Running test using coverage and then display report in venv virtual environment."
+	@echo ""
+	( source venv/bin/activate; rm -rf .coverag*; rm -rf htmlcov; sleep 1; coverage run manage.py test --noinput ; coverage html)
 	@echo ""

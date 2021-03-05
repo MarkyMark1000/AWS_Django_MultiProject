@@ -2,7 +2,7 @@ from django import forms
 
 
 class SendEmailForm(forms.Form):
-    form_email = forms.CharField(widget=forms.EmailInput(attrs={
+    form_email = forms.EmailField(widget=forms.EmailInput(attrs={
                                 'class': 'form-control',
                                 'placeholder': 'Email *',
                                 'required': 'required',

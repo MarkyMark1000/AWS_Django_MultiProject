@@ -72,16 +72,6 @@ run-dock:
 	( docker build -t mjw/sendemail .; docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/sendemail; )
 	@echo ""
 
-run-tests:
-	@echo ""
-	@echo "*** run project locally on docker ***"
-	@echo "  (don't forget to clean up images/containers)"
-	@echo ""
-	@echo "   http://localhost:8080"
-	@echo ""
-	( docker build -t mjw/sendemail .; docker run -e DJANGO_DEBUG='False' -p 8080:8080 mjw/sendemail; )
-	@echo ""
-
 test:
 	@echo ""
 	@echo "Running test in venv virtual environment."

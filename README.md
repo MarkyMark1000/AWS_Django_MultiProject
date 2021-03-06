@@ -15,3 +15,11 @@ These projects will largely use Docker containers, on AWS, so I will be making e
 > https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3-install.html
 
 > https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-install-software
+
+### .gitignore
+
+---
+
+This is just a warning.   There is a .gitignore file within the AWS_Django_MultiProject directory, which is important.   Some of the sub projects create extra .gitignore files that are local to the project when elastic beanstalk is setup.   These local versions of the .gitignore files are less important and can be deleted.
+
+With respect to the main .gitignore file, this file excludes some very specific files which are used to save security credentials, such as ses_account.py.   Please see the README.md files in the projects such as 1_SendEmailFromWebsite.py for more information on this.

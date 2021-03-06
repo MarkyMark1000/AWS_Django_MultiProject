@@ -25,6 +25,9 @@ Please see the following:
 
 > http://whitenoise.evans.io/en/stable/django.html
 
+It is worth noting that the staticfiles directory is currently excluded from github in the .gitignore file.   If this sub project was going to evolve into a production project, I believe it would make sense to clear out the staticfiles, then from that point forwards, keep a record
+of the staticfiles as new releases are pushed into production and add the staticfiles to github.
+
 ---
 
 ### AWS SETUP

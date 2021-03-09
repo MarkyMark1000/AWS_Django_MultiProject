@@ -20,6 +20,6 @@ from basiclogin import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.FrontEndView.as_view(), name='frontend'),
-    path('login_app/', include('apps.login_app.urls')),
+    path('accounts/', include('apps.login_app.urls')),
     
 ]

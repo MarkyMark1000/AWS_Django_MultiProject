@@ -1,3 +1,13 @@
 {
-    "python.pythonPath": "2_BasicLogin/venv/bin/python"
+    "python.pythonPath": "2_BasicLogin/venv/bin/python",
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./2_BasicLogin",
+        "-p",
+        "test*.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.unittestEnabled": true
 }

@@ -27,7 +27,7 @@ When using AWS it is possible to specify options for the Django or Python enviro
 
 After some trial and error, I found that the use of whitenoise is much easier to setup and so decided to progress with this option.   It creates new file versions when necessary and deploys static files effectively.
 
-Please note that DJANGO_DEBUG must be set to False for this to work properly, otherwise it does not deploy the versioned files.
+Please note that DJANGO_DEBUG must be set to False for this to work properly, otherwise it does not deploy the versioned files.   That being said, it is easier to develop and debug when it is set to True.
 
 There are also some adjustments made to the settings.py file to get this to work.  
 
@@ -38,6 +38,9 @@ Please see the following:
 > http://whitenoise.evans.io/en/stable/
 
 > http://whitenoise.evans.io/en/stable/django.html
+
+It is worth noting that the staticfiles directory is currently excluded from github in the .gitignore file.   If this sub project was going to evolve into a production project, I believe it would make sense to clear out the staticfiles, then from that point forwards, keep a record
+of the staticfiles as new releases are pushed into production and add the staticfiles to github.
 
 ---
 

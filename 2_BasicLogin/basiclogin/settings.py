@@ -12,6 +12,14 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
+from basiclogin.extra_code_or_config.getIP import \
+    appendIPToArray
+
+# Import Email Configuration django-ses
+from basiclogin.extra_code_or_config.ses_account import \
+    AWS_SES_ACCESS_KEY_ID, AWS_SES_SECRET_ACCESS_KEY, \
+    AWS_DEFAULT_REGION, AWS_SES_REGION_ENDPOINT, \
+    EMAIL_FROM_ADDRESS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,6 +40,9 @@ ALLOWED_HOSTS = ["localhost",
                  "django-basiclogin.7t021jc3146ps.eu-west-1.cs.amazonlightsail.com", # lightsail
                  "contbasiclogin-env.eba-mmwrva77.eu-west-1.elasticbeanstalk.com"] # elastic beanstalk
 
+# Append EC2 ip to ALLOWED_HOSTS to prevent unnecessary logs
+# or health degredation.
+appendIPToArray(ALLOWED_HOSTS)
 
 # Application definition
 
@@ -102,7 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # MJW - Set the email backend for the user management system.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django_ses.SESBackend'
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -131,4 +143,12 @@ STATICFILES_DIRS = [
     './basiclogin/static/',
 ]
 
+# Login Variables to control how Django deals with
+# different scenario's.   Other interesting variables
+# include LOGIN_URL, LOGUT_REDIRECT_URL, EMAIL_HOST,
+# EMAIL_HOST_PASSWORD, EMAIL_HOST_USER, EMAIL_PORT,
+# PASSWORD_RESET_TIMEOUT, PASSWORD_RESET_TIMEOUT_DAYS
+# https://docs.djangoproject.com/en/3.1/ref/settings/
+
 LOGIN_REDIRECT_URL = "frontend"
+DEFAULT_FROM_EMAIL = EMAIL_FROM_ADDRESS

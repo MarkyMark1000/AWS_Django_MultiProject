@@ -600,6 +600,58 @@ class PasswordResetTest(TestCase):
         SEARCH_TEXT = 'Password Reset Complete'
         self.assertContains(response, SEARCH_TEXT)
 
+    def test_double_password_reset(self):
+        '''
+		Go through the process of a password reset when
+        there are 2 accounts with the same password.
+
+		Templates Tested:   password_reset_form.html,
+                            password_reset_done.html,
+                            password_reset_email.html,
+                            password_reset_subject.txt,
+                            password_reset_conform.html,
+
+        '''
+
+        # Get the reset password form and post
+        self.user = User.objects.create_user(
+            username='testuser',
+            email='test@email.com',
+            password='A1b2C3_d4')
+        self.user2 = User.objects.create_user(
+            username='testuser2',
+            email='test@email.com',
+            password='E1f2G3_h4')
+
+        postData = {'email': "test@email.com"}
+
+        # Password change form (password_reset_form.html)
+        response = self.client.post("/accounts/password_reset/",
+                                    postData)
+
+        # Request redirected
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/accounts/password_reset/done/")
+
+        # Get redirected page and ensure the content is consistent
+        # password_reset_done.html
+        response = self.client.get(response.url)
+        SEARCH_TEXT = 'emailed you instructions for setting your password'
+        self.assertContains(response, SEARCH_TEXT)
+
+        # Make sure we have two emails in the outbox
+        self.assertEqual(len(mail.outbox), 2)
+
+        # Check the emails to ensure they look appropraite
+        SEARCH_TEXT = 'A password reset was requested for the following account'
+        SEARCH_TEXT2 = 'Password Reset Request'
+        for i in range(len(mail.outbox)):
+
+            self.assertIn(SEARCH_TEXT, mail.outbox[i].body)
+
+            self.assertIn(SEARCH_TEXT2, mail.outbox[i].subject)
+
+
     def test_invalid_password_reset(self):
         '''
 		Login page with no post, ie get.

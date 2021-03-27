@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_static %}
+{% endblock %}
+
+{% block main %}
+
+    <br><br><br><br><br><br>
+
+    <!-- ==== Start Sandbox ==== -->
+    {% if not PAYPAL_IS_LIVE %}
+        <div class="container text-center text-dark">
+            <h5>Please use the following data to test the sandbox account:</h5>
+            <br><br>
+
+            <a href="https://www.sandbox.paypal.com"> Login to Sandbox Account</a>
+            <br><br>
+
+            {% for key, value in LOGIN_DATA.items %}
+                <div>
+                <small class="text-muted">{{ key }} : {{ value }}</small>
+                </div>
+            {% endfor %}
+        </div>
+        <br>
+    {% endif %}
+    <!-- ==== End Sandbox ==== -->
+
+{% endblock %}
+
+{% block extra_footer_js %}
+{% endblock %}

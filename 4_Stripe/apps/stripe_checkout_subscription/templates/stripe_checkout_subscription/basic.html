@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block extra_static %}
+
+    <!-- stripe_checkout_single Styles -->
+    <link href="{% static 'stripe_checkout_subscription/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'stripe_checkout_subscription/css/responsive.css' %}" rel="stylesheet">
+
+    <!-- stripe js library - use remote version -->
+    <script src="https://js.stripe.com/v3/"></script>
+
+{% endblock %}
+
+
+{% block main %}
+
+    <div class="container">
+        <div class="pagesection text-center p-3 rounded border shadow-lg">
+
+            <h3>Choose a collaboration plan</h3>
+
+            <div class="row">
+                <!-- Starter/Basic Subscription Plan (& button)-->
+                <section class="col-xs-12 col-sm-12 col-md-6">
+                    <img
+                    src="{% static 'stripe_checkout_subscription/img/starter.png' %}"
+                    width="120"
+                    height="120"
+                    />
+                    <div class="name">Starter</div>
+                    <div class="price">£5</div>
+                    <div class="duration">per month</div>
+                    <button id="basic-plan-btn" class="btn btn-secondary">Select</button>
+                </section>
+                <!-- Pro Subscription Plan (& button)-->
+                <section class="col-xs-12 col-sm-12 col-md-6">
+                    <img
+                    src="{% static 'stripe_checkout_subscription/img/professional.png' %}"
+                    width="120"
+                    height="120"
+                    />
+                    <div class="name">Professional</div>
+                    <div class="price">£15</div>
+                    <div class="duration">per month</div>
+                    <button id="pro-plan-btn" class="btn btn-secondary">Select</button>
+                </section>
+            </div>
+
+            <!-- Display Errors-->
+            <div id="error-message" class="error-message text-danger small m-3"></div>
+        
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block extra_footer_js %}
+
+    <script type="text/javascript">
+
+        /*---------------------------------------------------------------------
+        These are functions used by coder later on in the script:
+        ---------------------------------------------------------------------*/
+
+        // If a fetch error occurs, log it to the console and show it in the UI.
+        var handleFetchResult = function(result) {
+            if (!result.ok) {
+                return result.json().then(function(json) {
+                if (json.error && json.error.message) {
+                    throw new Error(result.url + ' ' + result.status + ' ' + json.error.message);
+                }
+                }).catch(function(err) {
+                showErrorMessage(err);
+                throw err;
+                });
+            }
+            return result.json();
+        };
+
+        // Handle any errors returned from Checkout
+        var handleResult = function(result) {
+            if (result.error) {
+                showErrorMessage(result.error.message);
+            }
+        };
+
+        var showErrorMessage = function(message) {
+            var errorEl = document.getElementById("error-message")
+            errorEl.textContent = message;
+            errorEl.style.display = "block";
+        };
+
+        /*---------------------------------------------------------------------
+        This is the main section of code called createCheckoutSession that is
+        called when a button is hit.   It starts a checkout session using a
+        url setup on your server.
+        It is used by the code that follows this section:
+        ---------------------------------------------------------------------*/
+
+        // Create a Checkout Session from the server
+        var createCheckoutSession = function(priceId) {
+            return fetch("{% url 'stripe_sub_create_checkout_session' %}", {
+                method: "POST",
+                headers: {
+                "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                priceId: priceId
+                })
+            }).then(handleFetchResult);
+        };
+
+        /*---------------------------------------------------------------------
+        SETUP THE PAGE:
+        Make a call to the setup url on the server to get the publishable key,
+        and price information for the subscriptions.   It then adds click
+        events to the buttons on the screen.
+        These click events call createCheckoutSession (above) and then
+        redirec the user to the checkout.
+        There are click events for each button (basic and pro)
+         ---------------------------------------------------------------------*/
+        fetch("{% url 'stripe_sub_setup' %}")
+        .then(handleFetchResult)
+        .then(function(json) {
+
+            //Store publishable key, basic price id and pro price id from
+            //the webserver in variables
+            var publishableKey = json.publishableKey;
+            var basicPriceId = json.basicPrice;
+            var proPriceId = json.proPrice;
+
+            // Important - initiate stripe with the publishable key
+            var stripe = Stripe(publishableKey);
+
+            // Add click event to basic-plan-btn to call createCheckoutSession
+            // with basic price and then redirect to stripe.
+            document
+            .getElementById("basic-plan-btn")
+            .addEventListener("click", function(evt) {
+                createCheckoutSession(basicPriceId).then(function(data) {
+                // Call Stripe.js method to redirect to the new Checkout page
+                stripe
+                    .redirectToCheckout({
+                    sessionId: data.sessionId
+                    })
+                    .then(handleResult);
+                });
+            });
+
+            // Add click event to pro-plan-btn to call createCheckoutSession
+            // with pro price and then redirect to stripe.
+            document
+            .getElementById("pro-plan-btn")
+            .addEventListener("click", function(evt) {
+                createCheckoutSession(proPriceId).then(function(data) {
+                // Call Stripe.js method to redirect to the new Checkout page
+                stripe
+                    .redirectToCheckout({
+                    sessionId: data.sessionId
+                    })
+                    .then(handleResult);
+                });
+            });
+        });
+
+    </script>
+
+
+{% endblock %}

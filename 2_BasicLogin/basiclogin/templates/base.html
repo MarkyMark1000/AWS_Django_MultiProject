@@ -32,31 +32,47 @@
     <body>
 
         <!-- ====== start header ======  -->
+        <!-- Navbar -->
         <nav class="navbar navbar-expand-sm bg-darkfade navbar-dark fixed-top">
+            
             <!-- navbar-brand -->
             <a class="navbar-brand pt-0" href="{% url 'frontend' %}">
                 <img class="logo-1" src="{% static 'basiclogin/img/logo.png' %}" alt="Send Email Image">
             </a>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'frontend' %}">Home</a>
-                </li>
-                {% if user.is_authenticated %}
+
+            <!-- Collapse button -->
+            <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Collapsible content -->
+            <div class="collapse navbar-collapse" id="collapsibleNavbar">
+
+                <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'password_change' %}">Change Password</a>
+                        <a class="nav-link text-light" href="{% url 'frontend' %}">Home</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'password_reset' %}">Reset Password</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-                    </li>
-                {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Login</a>
-                    </li>
-                {% endif %}
-            </ul>
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-light" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{ user }}
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right border-0 bg-darkfade" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item border-0" href="{% url 'password_change' %}">Change Password</a>
+                                <a class="dropdown-item border-0" href="{% url 'password_reset' %}">Reset Password</a>
+                                <a class="dropdown-item border-0" href="{% url 'logout' %}">Logout</a>
+                            </div>
+                        </li>
+                    {% else %}
+                        <li class="nav-item ml-auto">
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
+                        </li>
+                    {% endif %}
+                </ul>
+
+            </div>
+            <!-- End Collapsible content -->
+
         </nav>
         <!-- ====== end header ======  -->
 

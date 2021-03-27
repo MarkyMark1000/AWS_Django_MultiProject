@@ -133,6 +133,16 @@ staticfiles/
 # github account.
 ses_account.py
 
+# Do not send paypal account details to github.   It remains
+# local to your pc.   You could remove this if using a private
+# github account.
+paypal_account.py
+PAYPAL_NOTES.md
+
+# Used for storing hidden account data from github.   It generally contains
+# keys etc.
+hidden_account.py
+
 # Do not track any backup files
 BACKUP_FILES
 # Elastic Beanstalk Files

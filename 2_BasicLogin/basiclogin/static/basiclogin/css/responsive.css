@@ -7,6 +7,15 @@
 }
 
 @media (max-width: 767px) {
+
+    .dropdown-menu{
+        width: 100%;
+        margin: 0px!important;
+    }
+    .navbar-nav .nav-item .nav-link{
+        text-align: left;
+    }
+
     .emailform {
         width: 90%;
         margin: 140px auto 0px auto;

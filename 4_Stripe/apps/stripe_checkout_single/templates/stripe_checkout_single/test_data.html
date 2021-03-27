@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block extra_static %}
+
+    <!-- stripe_checkout_single Styles -->
+    <link href="{% static 'stripe_checkout_single/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'stripe_checkout_single/css/responsive.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+
+{% block main %}
+
+    <div class="container">
+        <div class="pagesection text-center p-3 rounded border shadow-lg">
+
+        <h5>Use this data for testing the stripe basic checkout:</h5><br><br>
+        
+            <div class="text-left">
+                Successful payment:
+                <ul>
+                    <li>Enter 4242 4242 4242 4242 as the card number.</li>
+                    <li>Enter any future date for card expiry.</li>
+                    <li>Enter any 3-digit number for CVC.</li>
+                    <li>Enter any billing postal code.</li>
+                </ul>
+                3D Secure payment:
+                <ul>
+                    <li>Enter 4000 0000 0000 3220 as the card number.</li>
+                    <li>Enter any future date for card expiry.</li>
+                    <li>Enter any 3-digit number for CVC.</li>
+                    <li>Enter any billing postal code.</li>
+                </ul>
+                Fail with insufficient funds:
+                <ul>
+                    <li>Enter 4000 0000 0000 9995 as the card number.</li>
+                    <li>Enter any future date for card expiry.</li>
+                    <li>Enter any 3-digit number for CVC.</li>
+                    <li>Enter any billing postal code.</li>
+                </ul>
+                <br>
+                For full testing guidelines see the following:
+                <a href="https://stripe.com/docs/testing">Testing</a>
+
+            </div>
+
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block extra_footer_js %}
+
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block extra_static %}
+
+    <!-- stripe_checkout_single Styles -->
+    <link href="{% static 'stripe_checkout_single/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'stripe_checkout_single/css/responsive.css' %}" rel="stylesheet">
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+{% endblock %}
+
+
+{% block main %}
+
+    {% comment %}
+
+    This is based upon the following tutorial for a basic stripe setup:
+    https://stripe.com/docs/payments/accept-a-payment?integration=checkout&ui=checkout
+
+    It works in conjunction with the cancel.html and success.html paypal_templates/css/cardfields.css
+    {% endcomment %}
+
+    <div class="container">
+        <div class="pagesection text-center p-3 rounded border shadow-lg">
+
+                This is the checkout button!<br>
+
+                <button id="checkout-button" class="btn btn-secondary m-3">Checkout</button>
+
+        </div>
+    </div>
+    
+
+{% endblock %}
+
+
+{% block extra_footer_js %}
+
+    <script type="text/javascript">
+      // Create an instance of the Stripe object with your publishable API key
+      var stripe = Stripe('{{STRIPE_PUBLIC_KEY}}');
+      var checkoutButton = document.getElementById('checkout-button');
+
+      checkoutButton.addEventListener('click', function() {
+        // Create a new Checkout Session using the server-side endpoint you
+        // created in step 3.
+        fetch("{% url 'stripe_create_checkout_session' %}", {
+          method: 'GET',
+        })
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(session) {
+          return stripe.redirectToCheckout({ sessionId: session.id });
+        })
+        .then(function(result) {
+          // If `redirectToCheckout` fails due to a browser or network
+          // error, you should display the localized error message to your
+          // customer using `error.message`.
+          if (result.error) {
+            alert(result.error.message);
+          }
+        })
+        .catch(function(error) {
+          console.error('Error:', error);
+        });
+      });
+    </script>
+
+{% endblock %}

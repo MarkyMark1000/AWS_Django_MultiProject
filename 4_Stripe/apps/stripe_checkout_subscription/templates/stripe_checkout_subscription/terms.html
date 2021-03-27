@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_static %}
+
+    <!-- stripe_checkout_single Styles -->
+    <link href="{% static 'stripe_checkout_single/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'stripe_checkout_single/css/responsive.css' %}" rel="stylesheet">
+
+{% endblock %}
+
+
+{% block main %}
+
+    <div class="container">
+        <div class="pagesection text-center rounded border shadow-lg">
+
+        This is the terms view!!!
+        
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block extra_footer_js %}
+
+{% endblock %}

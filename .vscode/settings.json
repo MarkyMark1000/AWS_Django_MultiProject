@@ -3,7 +3,7 @@
     "python.testing.unittestArgs": [
         "-v",
         "-s",
-        "./2_BasicLogin",
+        "./4_Stripe",
         "-p",
         "test*.py"
     ],

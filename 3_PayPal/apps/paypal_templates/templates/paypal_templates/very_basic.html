@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_static %}
+
+    <!-- paypal sdk -->
+    
+    <!--
+      I have set locale here to ensure it looks like a UK payment system, but this
+      is not  recommended.   See the following:
+      https://developer.paypal.com/docs/business/javascript-sdk/javascript-sdk-configuration/
+    
+      I also suggest you seriously consider the following option to disable credit:
+      &disable-funding=credit
+    -->
+    <script src="https://www.paypal.com/sdk/js?client-id={{ CLIENT_ID }}&locale=en_GB&currency={{ CURRENCY }}" data-sdk-integration-source="button-factory">
+    </script>
+
+{% endblock %}
+
+{% block main %}
+
+    <br><br><br><br><br><br>
+
+    <!--
+        PLEASE NOTE THAT THE FORMAT OF THE PAYPAL CONTAINER WAS DESIGNED USING
+        THE FOLLOWING LINK.   TAKE A LOOK IF YOU WANT TO ADJUST IT:
+        https://www.paypal.com/buttons/smart?flowloggingId=004609ba385e1
+    -->
+
+    <!-- ==== Start PayPal ==== -->
+    <div class="container">
+
+        <!-- paypal container -->
+        <div id="smart-button-container">
+            <div style="text-align: center;">
+                <div id="paypal-button-container">
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <!-- ==== End PayPal ==== -->
+
+{% endblock %}
+
+{% block extra_footer_js %}
+
+<script>
+    function initPayPalButton() {
+
+      paypal.Buttons({
+        style: {
+          shape: 'rect',
+          color: 'silver',
+          layout: 'vertical',
+          label: 'paypal',
+          
+        },
+
+        /*
+        Investigate purchase_units on this page:
+        https://developer.paypal.com/docs/api/orders/v2/#definition-purchase_unit_request
+        
+        It might be possile to integrate different shipping options:
+        https://developer.paypal.com/docs/business/checkout/configure-payments/shipping-options/
+        
+        You can then play around with the inputs.
+        */
+
+        createOrder: function(data, actions) {
+          return actions.order.create({
+            purchase_units: [{
+                              "custom_id": "MJW321",
+                              "invoice_id": "INV321",
+                              "description": "test payment description",
+                              "soft_descriptor": "mjw-app",
+                              "amount":
+                                {"currency_code":"{{ CURRENCY }}",
+                                 "value":{{ AMOUNT }}}
+                              }]
+          });
+        },
+
+        onApprove: function(data, actions) {
+          return actions.order.capture().then(function(details) {
+            alert('Transaction completed by ' + details.payer.name.given_name + '!');
+          });
+        },
+
+        onError: function(err) {
+          console.log(err);
+        }
+      }).render('#paypal-button-container');
+    }
+
+    initPayPalButton();
+
+</script>
+
+{% endblock %}

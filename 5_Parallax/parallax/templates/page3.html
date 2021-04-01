@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head %}
+
+    <!-- Custom Styles -->
+    <link href="{% static 'parallax/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'parallax/css/responsive.css' %}" rel="stylesheet">
+
+    <style>
+
+        .parallax {
+            /* Only allow scrolling in y axis, if it is big enough */
+            overflow-x: hidden;
+            overflow-y: auto;
+            /* Perspective - Key Element for parallax.   It enlarges objects in foreground
+            and shrinks them in the background */
+            -webkit-perspective: 100px;
+            perspective: 100px;
+            -webkit-perspective-origin-x: center;
+            -webkit-perspective-origin-y: center;
+            perspective-origin: center center;        /* x-pos, y-pos */
+        }
+
+        .parallax_grp {
+            /*Position relative - its normal position*/
+            position: relative;
+            /* Make it the same size as the screen */
+            height: 100vh;
+            width: 100vw;
+            border: 0px solid blue;
+            /*preserve-3d, tells the browser that the 3D transformed
+            children of the element it’s set on shouldn’t be flattened into
+            the plane of their parent.*/
+            -webkit-transform-style: preserve-3d;
+            transform-style: preserve-3d;
+        }
+
+        /* Set the images into the background and scale them in size.
+        This is a key part of the parallax effect */
+        #parallax_images{
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            border: 0px solid orange;
+            transform: translate3d(0px, 0, -100px) scale(2);
+            opacity: 1;
+            z-index: 5;
+        }
+
+        /* Make images same size as the browser screen with cover */
+        .img-adj {
+            height: 100vh;
+            width: 100vw;
+            object-fit: cover;
+        }
+
+        /* The content is not set back/forwards, or scaled, but this
+        could be adjusted if necessary.   This is the web page content
+        of the parallax effect */
+        #parallax_content {
+            height: 100vh;
+            width: 100vw;
+            position: absolute;
+            border: 0px solid red;
+            transform: translate3d(0px, 0, 0px) scale(1);
+            opacity: 1;
+            z-index: 3;
+        }
+
+        /* Remaining css is used to format the content being displayed */
+
+        #div4, #div5, #div6, #div7, #div8{
+            height: 100vh;
+            width: 100vw;
+            border: 0px solid red;
+        }
+
+        .bg-opacity{
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .bg-black{
+            background-color: black;
+        }
+
+        body{
+            background-color: black;
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block main %}
+
+
+    <div class="parallax">
+        <div class="parallax_grp">
+
+            <!-- Part 1 - This is where the parallax images go -->
+            <div id="parallax_images">
+                <img class="img-adj" src="{% static 'parallax/img/bg-1.jpg' %}">
+                <img class="img-adj" src="{% static 'parallax/img/bg-2.jpg' %}">
+                <img class="img-adj" src="{% static 'parallax/img/bg-3.jpg' %}">
+            </div>
+
+            <!-- Part 2 - This is where the main content goes -->
+            <div id="parallax_content" class="container-fluid">
+                <div id="div4" class="text-white row justify-content-center align-items-center">
+                    <div class="col-6 h-50 border text-center bg-opacity">
+                        <h1>
+                            iPhone
+                        </h1>
+                        <p>
+                            This does work on an iPhone ....
+                        </p>
+                    </div>
+                </div>
+                <div id="div5" class="text-white row justify-content-center align-items-center">
+                    <div class="col-6 h-50 border text-center bg-opacity">
+                        <h1>
+                            div5
+                        </h1>
+                        <p>
+                            But I must explain to you how all this mistaken idea of denouncing pleasure and
+                            praising pain was born and I will give you a complete account of the system, and
+                            ...
+                        </p>
+                    </div>
+                </div>
+                <div id="div6" class="text-white row justify-content-center align-items-center">
+                    <div class="col-6 h-50 border text-center bg-opacity">
+                        <h1>
+                            div6
+                        </h1>
+                        <p>
+                            But I must explain to you how all this mistaken idea of denouncing pleasure and
+                            praising pain was born and I will give you a complete account of the system, and
+                            ...
+                        </p>
+                    </div>
+                </div>
+                <div id="div7" class="text-white row justify-content-center align-items-center">
+                    <div class="col-6 h-50 border text-center bg-opacity">
+                        <h1>
+                            div7
+                        </h1>
+                        <p>
+                            But I must explain to you how all this mistaken idea of denouncing pleasure and
+                            praising pain was born and I will give you a complete account of the system, and
+                            ...
+                        </p>
+                    </div>
+                </div>
+                <div id="div8" class="text-white row justify-content-center align-items-center">
+                    <div class="col-6 h-50 border text-center bg-opacity">
+                        <h1>
+                            div8
+                        </h1>
+                        <p>
+                            But I must explain to you how all this mistaken idea of denouncing pleasure and
+                            praising pain was born and I will give you a complete account of the system, and
+                            ...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Part 3 -  Start blending the page structure at the end -->
+                <div id="div9" class="text-white row">
+                    <div class="col-12 h-50 text-center bg-opacity">
+                        <h1>
+                            div9
+                        </h1>
+                        <p>
+                            Start to blend in the page structure
+                        </p>
+                        <br><br>
+                    </div>
+                    <div class="col-12 h-50 text-center bg-black">
+                        <h1>
+                            div10
+                        </h1>
+                        <p>
+                            More blending in of page structure
+                        </p>
+                        <br><br>
+                    </div>
+                </div>
+
+                <!-- Part 4 - Perhaps add a footer-->
+                
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

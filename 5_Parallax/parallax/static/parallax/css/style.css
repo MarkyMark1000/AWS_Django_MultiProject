@@ -1,0 +1,99 @@
+ /*================================================
+        Global
+==================================================*/
+* {
+    -webkit-box-sizing: border-box;
+    -o-box-sizing: border-box;
+    box-sizing: border-box;
+    text-decoration: none !important;
+    /*
+    This was in the original template, but has been removed because it turn's off list decoration.
+    If this causes problems, I may need to re-instate it.
+    list-style: none !important;
+    */
+    outline: none !important;
+}
+
+:focus {
+    outline: none;
+  }
+
+/* Necessary to get footer at bottom */
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+/*================================================
+        Navbar
+==================================================*/
+
+/*
+CSS for the animated hamburger icon for bootstrap (with some small adjustments):
+https://jsfiddle.net/Beaniie/s8rm1f0q/5/
+Also see this for bootstrap 3:
+https://codepen.io/impondesk/pen/EaKoXY
+*/
+  
+  /* I have taken the bootstrap bg-danger as a template and then adjusted the colours */
+  .bg-black{
+      background-color:black!important;
+  }
+  a.bg-black:focus, a.bg-black:hover, button.bg-black:focus, button.bg-black:hover{
+      background-color:blue!important;
+  }
+  .bg-darkfade{
+    background-color:#343a40!important;
+    background-image: linear-gradient(to right,#214b75 0%,#343a40 100%)!important;
+  }
+  a.bg-darkfade:focus,a.bg-darkfade:hover,button.bg-darkfade:focus,button.bg-darkfade:hover{
+    background-color:#1d2124!important;
+  }
+  
+  .logo-1{
+    max-width: 60px;
+    height: auto;
+  }
+  
+  .nav-item.dropdown a:focus{
+      outline:none;
+  }
+  
+  .navbar-nav .nav-item .nav-link{
+      font-size: 13px;
+      color: #8e8e8e;
+      padding: 10px 10px;
+      -webkit-transition: .3s;
+      transition: .3s;
+      text-transform: uppercase;
+      font-family: 'Raleway', sans-serif;
+      letter-spacing: 1px;
+      text-align: center;
+      font-weight: 500;
+  }
+  
+  .navbar-nav .nav-item .dropdown-menu a{
+      font-size: 13px;
+      color: #8e8e8e;
+      font-family: 'Raleway', sans-serif;
+      letter-spacing: 1px;
+      font-weight: 500;
+      border-style: solid;
+      border-width: 0px 0px 1px 0px;
+      border-color: rgba(255,255,255,.25);
+  }
+  .navbar-nav .nav-item .dropdown-menu a:last-child {
+      border-style: none;
+  }
+  .navbar-nav .nav-item a i.fa-angle-down {
+      margin: 3px 0px 0px 5px;
+  }
+
+  .pagesection {
+    width: 70%;
+    border-color: darkslategrey;
+    margin: 200px auto 0px auto;
+  }
+  
+p {font-size:2rem!important;}

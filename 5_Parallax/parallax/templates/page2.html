@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head %}
+
+<style>
+
+/*
+My Understanding:
+This uses 3D translatoins, in particular it moves layers along the Z Axis.
+
+We create a parallax section that displays the contents with a perspective
+but the content isn't flattened.   Perspective increases images with a high
+z-index (in the foreground) and shrinks them with a low z-index (background).
+We then move one section into the background using a Z Axis translation, but
+scale it up to counter the effect of the perspective.
+
+In effect, we create a really big 'back' screen that is moved into the background
+and a small 'base' screen in the foreground that moves much more quickly as we
+scroll.
+
+Pay attention to the following groups of characteristics across classes:
+
+[ perspective, translateZ and Scale ]
+[ z-index of the base and back layer ]
+
+*/
+
+.parallax {
+    /* 100% screen height, with fallback for older browser*/
+    height: 500px;
+    height: 100vh;
+    /* No horizontal scrolling, but possile vertical scrolling*/
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* Key Element to provide parallax see also ZTransform and Scale below*/
+    -webkit-perspective: 300px;
+    perspective: 300px;
+}
+
+.parallax__group {
+    /*Position relative - its normal position*/
+    position: relative;
+    /* 100% screen height, with fallback for older browser*/
+    height: 500px;
+    height: 100vh;
+    /*preserve-3d does, tells the browser that the 3D transformed
+    children of the element it’s set on shouldn’t be flattened into
+    the plane of their parent.*/
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    border: 1px solid green;
+}
+
+.parallax__layer {
+    /*position relative to its nearest ancestor*/
+    position: absolute;
+    /*top, right etc spacing is zero*/
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+/*
+What the following translations do is create a base
+layer, which is the normal size, but another back layer
+that is really big (scale).   This background layer moves
+more slowly as we scroll.
+You may want to play around with z-index to decide what is
+seen.
+*/
+
+.parallax__layer--base {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    z-index: 4;
+    border: 1px solid red;
+}
+
+.parallax__layer--back {
+   -webkit-transform: translateZ(-300px) scale(2);
+    transform: translateZ(-300px) scale(2);
+    z-index: 5;
+    border: 1px solid orange;
+}
+
+/*
+Additional formatting for the contents of the different layers
+*/
+
+.title {
+    text-align: center;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.opac{
+    opacity: 0.2;
+}
+
+</style>
+
+{% endblock %}
+
+{% block main %}
+
+    {% comment %}
+    This is based upon the following tutorial:
+    https://keithclark.co.uk/articles/pure-css-parallax-websites/
+    https://keithclark.co.uk/articles/pure-css-parallax-websites/demo3/
+    {% endcomment %}
+
+    <div class="parallax">
+        <div class="parallax__group">
+            <div class="parallax__layer parallax__layer--back bg-info opac">
+                <div class="title">
+                    <h2>This is the back layer</h2>
+                </div>
+            </div>
+            <div class="parallax__layer parallax__layer--base bg-warning opac">
+                <div class="title">
+                    <h2>This is the base layer</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

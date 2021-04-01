@@ -119,7 +119,7 @@ class SingleCheckoutWebhookTest(TestCase):
 
         c = Client(HTTP_STRIPE_SIGNATURE='blah')
 
-        with mock.patch("apps.stripe_checkout_subscription.views.stripe.Webhook.construct_event") as ge:
+        with mock.patch("apps.stripe_checkout_single.views.stripe.Webhook.construct_event") as ge:
 
             # The code that this tests is taken from stripe and would need
             # modification for a production environment!!!
@@ -140,7 +140,7 @@ class SingleCheckoutWebhookTest(TestCase):
 
         c = Client(HTTP_STRIPE_SIGNATURE='blah')
 
-        with mock.patch("apps.stripe_checkout_subscription.views.stripe.Webhook.construct_event") as ge:
+        with mock.patch("apps.stripe_checkout_single.views.stripe.Webhook.construct_event") as ge:
 
             # The code that this tests is taken from stripe and would need
             # modification for a production environment!!!
@@ -161,7 +161,7 @@ class SingleCheckoutWebhookTest(TestCase):
 
         c = Client(HTTP_STRIPE_SIGNATURE='blah')
 
-        with mock.patch("apps.stripe_checkout_subscription.views.stripe.Webhook.construct_event") as ge:
+        with mock.patch("apps.stripe_checkout_single.views.stripe.Webhook.construct_event") as ge:
 
             # The code that this tests is taken from stripe and would need
             # modification for a production environment!!!
@@ -182,7 +182,7 @@ class SingleCheckoutWebhookTest(TestCase):
 
         c = Client(HTTP_STRIPE_SIGNATURE='blah')
 
-        with mock.patch("apps.stripe_checkout_subscription.views.stripe.Webhook.construct_event") as ge:
+        with mock.patch("apps.stripe_checkout_single.views.stripe.Webhook.construct_event") as ge:
 
             # The code that this tests is taken from stripe and would need
             # modification for a production environment!!!

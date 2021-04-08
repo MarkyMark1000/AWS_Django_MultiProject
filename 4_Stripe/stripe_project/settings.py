@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'apps.stripe_checkout_single',
     'apps.stripe_checkout_subscription',
     'apps.stripe_elements_single',
+    'apps.stripe_elements_subscription',
 ]
 
 MIDDLEWARE = [

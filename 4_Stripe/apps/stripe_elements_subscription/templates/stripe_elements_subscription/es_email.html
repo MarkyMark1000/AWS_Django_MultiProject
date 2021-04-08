@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block extra_static %}
+
+    <!-- stripe_elements_single Styles -->
+    <link href="{% static 'stripe_elements_single/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'stripe_elements_single/css/responsive.css' %}" rel="stylesheet">
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+{% endblock %}
+
+
+{% block main %}
+
+    {% comment %}
+
+    This is based upon the following tutorial using elements for a suscription:
+    https://stripe.com/docs/billing/subscriptions/fixed-price
+
+    STRIPE USES HTTPS BUT THE SITE SHOULD ALSO BE CONVERTED TO USE HTTPS.
+
+    {% endcomment %}
+
+    
+    <div class="pagesection text-center p-3 rounded border shadow-lg">
+
+      <form id="signup-form">
+        <div class="container">
+
+          <!-- EMAIL LABEL -->
+          <div class="row py-1">
+            Email:
+          </div>
+
+          <!-- EMAIL ADDRESS INPUT -->
+          <div class="row py-1">
+            <input id="email" class="col-12" type="text" placeholder="Email address" value="test@example.com" required />
+          </div>
+
+          <!-- SUBMIT BUTTON -->
+          <div class="row py-5">
+            <button type="submit" class="btn btn-primary w-100">
+              Register
+            </button>
+          </div>
+
+        </div>
+      </form>
+
+    </div>
+
+{% endblock %}
+
+
+{% block extra_footer_js %}
+
+
+{% endblock %}

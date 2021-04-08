@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block extra_static %}
+
+    <!-- stripe_elements_single Styles -->
+    <link href="{% static 'stripe_elements_single/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'stripe_elements_single/css/responsive.css' %}" rel="stylesheet">
+
+    <link href="{% static 'stripe_elements_single/css/stripe_top.css' %}" rel="stylesheet">
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+{% endblock %}
+
+
+{% block main %}
+
+    {% comment %}
+
+    This is based upon the following tutorial using elements for a single payment:
+    https://stripe.com/docs/payments/accept-a-payment?integration=checkout&ui=elements
+
+    STRIPE USES HTTPS BUT THE SITE SHOULD ALSO BE CONVERTED TO USE HTTPS.
+
+    {% endcomment %}
+
+    
+    <div class="pagesection text-center p-3 rounded border shadow-lg">
+
+        <!--Example 1-->
+        <div class="cell example example1" id="example-1">
+
+            <!-- payment for for the card data etc -->
+            <form id="payment-form" class="sr-payment-form p-3">
+
+                <!-- Card Details - adjusted by javascript -->
+                <div class="sr-combo-inputs-row">
+                    <div class="sr-input sr-card-element border p-2 my-3" id="card-element"></div>
+                </div>
+
+                <!-- Card Errors -->
+                <div class="sr-field-error" id="card-errors" role="alert"></div>
+
+                <!-- Submit button and spinner -->
+                <button id="submit" class="mt-3">
+                    <div id="submit-spinner" class="spinner-border text-primary d-none" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <span id="button-text">Pay</span><span id="order-amount"></span>
+                </button>
+
+            </form>
+
+            <div class="sr-result d-none">
+                <p>Payment completed<br /></p>
+                <pre>
+                    <code></code>
+                </pre>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+
+
+{% block extra_footer_js %}
+
+    <script>
+
+        'use strict';
+
+        // IMPORTANT - Insert Variabble - Stripe Public Key
+        var stripe = Stripe('{{STRIPE_PUBLIC_KEY}}');
+
+        // Currently this is not used on the server side and
+        // the payment amount is set on the server.    It has
+        // been left incase you want to change the payment
+        // process in the future so it uses multiple purchase
+        // objects.
+        var orderData = {
+            items: [{ id: "photo-subscription" }],
+            currency: "usd"
+        };
+
+        // Disable the button until we have Stripe set up on the page
+        document.querySelector("button").disabled = true;
+
+        // IMPORTANT - Insert Link - create payment intent
+        fetch("{% url 'stripe_elements_create_payment_intent' %}", {
+            //Get data from webserver and process it.
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(orderData)
+        })
+        .then(function(result) {
+            return result.json();
+        })
+        .then(function(data) {
+            return setupElements(data);
+        })
+        .then(function({ stripe, card, clientSecret }) {
+
+            // Once here, we process the payment-form to
+            //add a submit event listener
+
+            // Disable while processing.
+            document.querySelector("button").disabled = false;
+
+            // Handle form submission.
+            var form = document.getElementById("payment-form");
+            form.addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                // Initiate payment when the submit button is clicked
+                pay(stripe, card, clientSecret);
+            });
+
+        });
+
+    </script>
+
+    <!----------------------------------------------------------------
+    This section contains the code for 'setupElements' which is called
+    above before the submit event listener is setup.
+    ---------------------------------------------------------------->
+    <script src="{% static 'stripe_elements_single/js/setup_elements.js' %}"></script>
+
+    <!----------------------------------------------------------------
+    This section contains the code for the 'pay' function above which
+    is executed when the submit button is hit
+    ---------------------------------------------------------------->
+    <script src="{% static 'stripe_elements_single/js/submit_button.js' %}"></script>
+
+{% endblock %}

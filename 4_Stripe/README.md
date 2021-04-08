@@ -20,7 +20,7 @@ This project has an apps directory with multiple apps within it.   At present, o
 
 Each app has it's own README file which you need to read to get it's features up and running.
 
-At present I have only got 1) and 3) working.
+At present I have only got 1), 2) and 3) working.
 
 ### Dependencies:
 

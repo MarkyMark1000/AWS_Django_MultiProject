@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.stripe_checkout_single',
     'apps.stripe_checkout_subscription',
+    'apps.stripe_elements_single',
 ]
 
 MIDDLEWARE = [

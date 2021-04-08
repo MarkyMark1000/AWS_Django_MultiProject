@@ -1,0 +1,166 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block extra_static %}
+
+    <!-- stripe_elements_single Styles -->
+    <link href="{% static 'stripe_elements_single/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'stripe_elements_single/css/responsive.css' %}" rel="stylesheet">
+
+    <!-- styles that match setup_elements2.js -->
+    <link href="{% static 'stripe_elements_single/css/setup_elements2.css' %}" rel="stylesheet">
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
+
+{% endblock %}
+
+
+{% block main %}
+
+    {% comment %}
+
+    This is based upon the following tutorial using elements for a single payment:
+    https://stripe.com/docs/payments/accept-a-payment?integration=checkout&ui=elements
+
+    STRIPE USES HTTPS BUT THE SITE SHOULD ALSO BE CONVERTED TO USE HTTPS.
+
+    {% endcomment %}
+
+    
+    <div class="pagesection text-center p-3 rounded border shadow-lg">
+
+        <!--Example 3-->
+        <div class="cell example example3 px-3" id="example-3">
+
+            <!-- payment for for the card data etc -->
+            <form id="payment-form" class="sr-payment-form">
+
+                <div class="container">
+
+                    <!-- Card Details - adjusted by javascript -->
+                    <div class="row justify-content-center py-3">
+                        <input id="example3-name" class="col-12 border" type="text" placeholder="Name" required="" autocomplete="name">
+                    </div>
+                    <div class="row justify-content-between py-3">
+                        <input id="example3-email" class="col-12 col-md-5 border" type="email" placeholder="Email" required="" autocomplete="email">
+                        <input id="example3-zip" class="col-12 col-md-5 border" placeholder="Zip">
+                    </div>
+                    <div class="row justify-content-between py-3">
+                        <div id="example3-card-number" class="col-12"></div>
+                    </div>
+                    <div class="row justify-content-between py-3">
+                        <div id="example3-card-expiry" class="col-12 col-md-5"></div>
+                        <div id="example3-card-cvc" class="col-12 col-md-5"></div>
+                    </div>
+
+                    <!-- Card Errors -->
+                    <div class="row justify-content-between py-3">
+                        <div class="sr-field-error col-12" id="card-errors" role="alert"></div>
+                    </div>
+
+                    <!-- Submit button and spinner -->
+                    <div class="row justify-content-center py-3">
+                        <button id="submit" class="btn btn-primary col-10">
+                            <div id="submit-spinner" class="spinner-border text-warning d-none" role="status">
+                                <span class="sr-only">Loading...</span>
+                            </div>
+                            <span id="button-text">Pay</span><span id="order-amount"></span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+            <div class="sr-result d-none">
+                <p>Payment completed<br /></p>
+                <pre>
+                    <code></code>
+                </pre>
+            </div>
+
+        </div>
+
+    </div>
+
+{% endblock %}
+
+
+{% block extra_footer_js %}
+
+    <script>
+
+        'use strict';
+
+        // IMPORTANT - Insert Variabble - Stripe Public Key
+        var stripe = Stripe('{{STRIPE_PUBLIC_KEY}}');
+
+        // Currently this is not used on the server side and
+        // the payment amount is set on the server.    It has
+        // been left incase you want to change the payment
+        // process in the future so it uses multiple purchase
+        // objects.
+        var orderData = {
+            items: [{ id: "photo-subscription" }],
+            currency: "usd"
+        };
+
+        // Disable the button until we have Stripe set up on the page
+        document.querySelector("button").disabled = true;
+
+        // IMPORTANT - Insert Link - create payment intent
+        fetch("{% url 'stripe_elements_create_payment_intent' %}", {
+            //Get data from webserver and process it.
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(orderData)
+        })
+        .then(function(result) {
+            return result.json();
+        })
+        .then(function(data) {
+            return setupElements(data);
+        })
+        .then(function({ stripe, cardNumber, cardExpiry, cardCvc, clientSecret }) {
+
+            // Once here, we process the payment-form to
+            //add a submit event listener
+
+            // Disable while processing.
+            document.querySelector("button").disabled = false;
+
+            // Handle form submission.
+            var form = document.getElementById("payment-form");
+            form.addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                // Initiate payment when the submit button is clicked
+                pay(stripe, cardNumber, cardExpiry, cardCvc, clientSecret);
+            });
+
+        });
+
+    </script>
+
+    <!----------------------------------------------------------------
+    This section contains the code for 'setupElements' which is called
+    above before the submit event listener is setup.
+    ---------------------------------------------------------------->
+    <script src="{% static 'stripe_elements_single/js/setup_elements2.js' %}"></script>
+
+    <!----------------------------------------------------------------
+    This section contains the code for the 'pay' function above which
+    is executed when the submit button is hit
+    ---------------------------------------------------------------->
+    <script src="{% static 'stripe_elements_single/js/submit_button2.js' %}"></script>
+
+{% endblock %}

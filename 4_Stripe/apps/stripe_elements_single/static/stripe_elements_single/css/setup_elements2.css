@@ -1,0 +1,60 @@
+/*-------------------------------------------------------
+This sheet goes hand in hand with the setup_elements2.js sheet.
+They both contain formatting that is relevant to the payment
+form.
+Formatting stripe elements can be tricky as the javascript
+embed's objects into your form.   You have the following formatting
+methods available:
+i) Standard CSS, but this has limited used with the card number etc
+ii) setup_elements2.js has javascript that formats the card number etc
+iii) Within this file there are stripe specific classes (eg StripeElement)
+that format the fields after they are built.
+I FOUND THIS FRUSTRATING - YOU MAY NEED TO TRY ALL THREE AND BE OPEN
+TO SOME TO GET A
+PARTICULAR FORMAT.
+-------------------------------------------------------*/
+
+/*-------------------------------------------------------
+USE THIS TO FORMAT THE FORM INPUT ELEMENTS THAT ARE NOT
+STRIPE SPECIFIC (EG NAME, EMAIL ADDRESS) SO THAT THEY ARE
+THE SAME OR SIMILAR TO THE STRIPE INPUTS (CARD NUMBER ETC)
+-------------------------------------------------------*/
+input{
+    color: #888888;
+    background-color: transparent;
+    font-weight: 600;
+    font-family: Quicksand, sans-serif;
+    font-size: '16px';
+}
+    input:focus{
+        color: '#888888';
+    }
+    input::placeholder{
+        color: '#888888';
+    }
+    input:focus::placeholder{
+        color: '#888888';
+    }
+    input:-webkit-autofill {
+        color: #888888;
+        -webkit-text-fill-color: #888888;
+        transition: background-color 100000000s;
+        -webkit-animation: 1ms void-animation-out;
+    }
+
+/*-------------------------------------------------------
+THESE ARE STRIPE SPECIFIC FORMATS THAT ARE TRANSFERED TO
+THE STRIPE SPECIFIC ELEMENTS SUCH AS CARD NUMBER.
+-------------------------------------------------------*/
+.StripeElement, .StripeElement--complete,
+.StripeElement--empty .StripeElement--focus,
+.StripeElement--invalid {
+    padding: 5px 15px;
+    border: 1px solid rgb(222, 226, 230);
+}
+
+/* Turns off the yellow auto-fill in stripe input elements */
+.StripeElement--webkit-autofill {
+    color: #888888;
+    background: transparent !important;
+}

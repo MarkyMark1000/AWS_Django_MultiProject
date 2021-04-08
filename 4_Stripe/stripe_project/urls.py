@@ -22,4 +22,5 @@ urlpatterns = [
     path('', views.FrontEndView.as_view(), name='frontend'),
     path('', include('apps.stripe_checkout_single.urls')),
     path('', include('apps.stripe_checkout_subscription.urls')),
+    path('', include('apps.stripe_elements_single.urls')),
 ]

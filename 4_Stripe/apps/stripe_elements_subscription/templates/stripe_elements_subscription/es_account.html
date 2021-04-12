@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block extra_static %}
+
+    <!-- stripe_elements_single Styles -->
+    <link href="{% static 'stripe_elements_single/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'stripe_elements_single/css/responsive.css' %}" rel="stylesheet">
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+{% endblock %}
+
+
+{% block main %}
+
+    {% comment %}
+
+    This is based upon the following tutorial using elements for a suscription:
+    https://stripe.com/docs/billing/subscriptions/fixed-price
+
+    STRIPE USES HTTPS BUT THE SITE SHOULD ALSO BE CONVERTED TO USE HTTPS.
+
+    {% endcomment %}
+
+    
+    <div class="pagesection text-center p-3 rounded border shadow-lg">
+
+      <h3>Account</h3>
+
+      <div id="subscriptions">
+        <!-- see account.js to see how this div is populated -->
+      </div>
+
+    </div>
+
+{% endblock %}
+
+
+{% block extra_footer_js %}
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', async () => {
+
+      // Fetch the list of subscriptions for this customer.
+      const {subscriptions} = await fetch("{% url 'stripe_elements_list_subscriptions' %}").then((r) => r.json());
+
+      // Construct and display each subscription, its status, last4 of the card
+      // used, and the current period end.
+      const subscriptionsDiv = document.querySelector('#subscriptions');
+      subscriptionsDiv.innerHTML = subscriptions.data.map((subscription) => {
+        return `
+          <hr>
+          <h4>
+            <a href="https://dashboard.stripe.com/test/subscriptions/${subscription.id}">
+              ${subscription.id}
+            </a>
+          </h4>
+
+          <p>
+            Status: ${subscription.status}
+          </p>
+
+          <p>
+            Card last4: ${subscription.default_payment_method.card.last4}
+          </p>
+
+          <p>
+            Current period end: ${new Date(subscription.current_period_end * 1000)}
+          </p>
+
+          <!--
+          These were present, but not implemented in the online tutorial!
+          <a href="change-payment-method.html?subscription=${subscription.id}"> Update payment method </a><br />
+          <a href="change-plan.html?subscription=${subscription.id}"> Change plan </a><br />
+          -->
+          <a href="{% url 'stripe_elements_cancel_subscription' %}${subscription.id}/"> Cancel </a><br/>
+        `;
+      }).join('<br />');
+    });
+
+  </script>
+
+{% endblock %}

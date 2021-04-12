@@ -10,7 +10,7 @@ After a bit of research, I found that there are roughly 2 areas that were releva
 * Checkout - a simpler method, where stripe provides the payment form.
 * Stripe Elements - more complicated, but allows you to embed forms within your website.
 
-This project has an apps directory with multiple apps within it.   At present, only two of the following plans have been completed, but I am planning to create an app for each of the following:
+This project has an apps directory with multiple apps within it:
   * 1) Single Payment on pre-built Stripe Checkout page.  
   * 2) Single Payment using a custom page and Stripe Elements.  
   * 3) Subscription using pre-built Stripe Checkout page.  
@@ -19,8 +19,6 @@ This project has an apps directory with multiple apps within it.   At present, o
 (Please note that there is some code repetition which may be a bit annoying, but I can live with this because I would never use all of these payment methods at the same time within a live website)
 
 Each app has it's own README file which you need to read to get it's features up and running.
-
-At present I have only got 1), 2) and 3) working.
 
 ### Dependencies:
 
@@ -53,11 +51,11 @@ You can customize public facing information such as:
     > https://github.com/stripe-samples/checkout-one-time-payments/tree/master/client/html
     > https://github.com/stripe-samples/checkout-one-time-payments/blob/master/server/python/server.py
 2) Single Payment using a custom page and Stripe Elements:
-    > 
+    > https://stripe.com/docs/payments/accept-a-payment?ui=elements
 3) Subscription using pre-built Stripe Checkout page:
     > https://github.com/stripe-samples/checkout-single-subscription/tree/master/server/python
 4) Subscription using a custom page and Stripe Elements:
-    > 
+    > https://stripe.com/docs/billing/subscriptions/fixed-price
 
 ### Email sent by Stripe:
 

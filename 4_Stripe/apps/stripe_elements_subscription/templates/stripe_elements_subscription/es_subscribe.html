@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block extra_static %}
+
+    <!-- stripe_elements_single Styles -->
+    <link href="{% static 'stripe_elements_subscription/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'stripe_elements_subscription/css/responsive.css' %}" rel="stylesheet">
+
+    <!-- styles that match setup_elements2.js -->
+    <link href="{% static 'stripe_elements_subscription/css/setup_subscribe_elements.css' %}" rel="stylesheet">
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Quicksand" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet">
+
+{% endblock %}
+
+
+{% block main %}
+
+    {% comment %}
+
+    This is based upon the following tutorial using elements for a suscription:
+    https://stripe.com/docs/billing/subscriptions/fixed-price
+
+    STRIPE USES HTTPS BUT THE SITE SHOULD ALSO BE CONVERTED TO USE HTTPS.
+
+    {% endcomment %}
+
+    
+    <div class="pagesection text-center p-3 rounded border shadow-lg">
+
+        <form id="subscribe-form">
+            <div class="container p-3">
+
+                <!--Input Name-->
+                <input type="text" id="name" class="w-100" placeholder="Full Name" />
+
+                <!--Card Element - populated by stripe javascript -->
+                <div id="card-element" class="border w-100 my-3">
+                <!-- the card element will be mounted here -->
+                </div>
+
+                <!--Submit button-->
+                <button type="submit" class="btn btn-primary mt-3 w-100">Subscribe</button>
+
+                <!--Messages/Errors-->
+                <div id="messages"></div>
+            
+            </div>
+        </form>
+
+    </div>
+
+{% endblock %}
+
+
+{% block extra_footer_js %}
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', async () => {
+
+        // Extract the price query string argument. This is one of `basic` or
+        // `premium` and we'll need to pass this to the server when we create the
+        // Subscription.
+        var path = window.location.pathname;
+        path = path.split('/').filter(function(e){return e});
+        var priceLookupKey = path.pop();
+
+        // IMPORTANT - Insert Variabble - Stripe Public Key
+        var stripe = Stripe('{{STRIPE_PUBLIC_KEY}}');
+
+        // Create and mount the single line card element
+        var elements = stripe.elements();
+
+        // define style to be used within the stripe payment
+        // elements (card numer etc)
+        var style = {
+            base: {
+            color: "#32325d",
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: "antialiased",
+            fontSize: "16px",
+            "::placeholder": {
+                color: "#aab7c4"
+            }
+            },
+            invalid: {
+            color: "#fa755a",
+            iconColor: "#fa755a"
+            }
+        };
+
+        // Create the 'stripe' card and then mount it onto the div
+        // "#card-element" within the form.
+        var cardElement = elements.create("card", { style: style });
+        cardElement.mount("#card-element");
+
+
+        // When the subscribe-form is submitted we do a few things.
+        //
+        // 1. Tokenize the payment method
+        // 2. Create the subscription
+        // 3. Handle any next actions like 3DSecure that are required for SCA.
+        const form = document.querySelector('#subscribe-form');
+        form.addEventListener('submit', async (e) => {
+            // Don't fully submit the form.
+            e.preventDefault();
+
+            setMessage("Subscribing... please wait.");
+
+            // Tokenize the payment method.
+            //
+            // This makes a client side API call to Stripe to pass the payment
+            // details and returns either an error or a new paymentMethod object that
+            // we'll pass when creating the Subscription.
+            const nameInput = document.querySelector('#name');
+            const {error, paymentMethod} = await stripe.createPaymentMethod({
+                type: 'card',
+                card: cardElement,
+                billing_details: {
+                name: nameInput.value,
+                }
+            });
+
+            if(error) {
+                // show error and collect new card details.
+                setMessage(error.message);
+            } else {
+                setMessage(`Payment method created ${paymentMethod.id}`);
+
+                // Create the subscription.
+                const {error, subscription} = await fetch("{% url 'stripe_elements_create_subscription' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    priceLookupKey,
+                    paymentMethodId: paymentMethod.id
+                }),
+                })
+                .then((response) => response.json());
+
+                if(error) {
+                // show error and collect new card details.
+                setMessage(error.message);
+                return;
+                }
+
+                setMessage(`Subscription created with status: ${subscription.status}`);
+
+                // This sample only supports a Subscription with payment
+                // upfront. If you offer a trial on your subscription, then
+                // instead of confirming the subscription's latest_invoice's
+                // payment_intent. You'll use stripe.confirmCardSetup to confirm
+                // the subscription's pending_setup_intent.
+                switch(subscription.status) {
+                case 'active':
+                    // Redirect to account page
+                    setMessage("Success! Redirecting to your account.");
+                    window.location.href = "{% url 'stripe_elements_account' %}";
+                    break;
+
+
+                case 'incomplete':
+                    setMessage("Please confirm the payment.");
+
+                    // Handle next actions
+                    //
+                    // If the status of the subscription is `incomplete` that means
+                    // there are some further actions required by the customer. In
+                    // the case of upfront payment (not trial) the payment is confirmed
+                    // by passing the client_secret of the subscription's latest_invoice's
+                    // payment_intent.
+                    //
+                    // For trials, this works a little differently and requires a call to
+                    // `stripe.confirmCardSetup` and passing the subscription's
+                    // pending_setup_intent's client_secret like so:
+                    //
+                    //   const {error, setupIntent} = await stripe.confirmCardSetup(
+                    //     subscription.pending_setup_intent.client_secret
+                    //   )
+                    //
+                    // then handling the resulting error and setupIntent as we do below.
+                    //
+                    // This sample does not support subscriptions with trials. Instead, use these docs:
+                    // https://stripe.com/docs/billing/subscriptions/trials
+                    const {error, paymentIntent} = await stripe.confirmCardPayment(
+                    subscription.latest_invoice.payment_intent.client_secret,
+                    )
+
+                    if(error) {
+                    setMessage(error.message);
+                    } else {
+                    setMessage("Success! Redirecting to your account.");
+                    window.location.href = "{% url 'stripe_elements_account' %}";
+                    }
+                    break;
+
+
+                default:
+                    setMessage(`Unknown Subscription status: ${subscription.status}`);
+                }
+            }
+        });
+    });
+
+    // helper method for displaying a status message.
+    const setMessage = (message) => {
+    const messageDiv = document.querySelector('#messages');
+    messageDiv.innerHTML += "<br>" + message;
+    }
+
+  </script>
+
+{% endblock %}

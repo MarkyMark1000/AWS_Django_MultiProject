@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block extra_static %}
+
+    <!-- stripe_elements_single Styles -->
+    <link href="{% static 'stripe_elements_single/css/style.css' %}" rel="stylesheet">
+    <link href="{% static 'stripe_elements_single/css/responsive.css' %}" rel="stylesheet">
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+{% endblock %}
+
+
+{% block main %}
+
+    {% comment %}
+
+    This is based upon the following tutorial using elements for a suscription:
+    https://stripe.com/docs/billing/subscriptions/fixed-price
+
+    STRIPE USES HTTPS BUT THE SITE SHOULD ALSO BE CONVERTED TO USE HTTPS.
+
+    {% endcomment %}
+
+    
+    <div class="pagesection text-center p-3 rounded border shadow-lg">
+
+      <h1>Cancel</h1>
+
+      <button id="cancel-btn">Cancel</button>
+
+      <div id="messages"></div>
+
+    </div>
+
+{% endblock %}
+
+
+{% block extra_footer_js %}
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Fetch the ID of the subscription from the query string
+        // params.
+        var path = window.location.pathname;
+        path = path.split('/').filter(function(e){return e});
+        var subscriptionId = path.pop();
+
+        // When the cancel button is clicked, send an AJAX request
+        // to our server to cancel the subscription.
+        const cancelBtn = document.querySelector('#cancel-btn');
+        cancelBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            setMessage("Cancelling subscription...");
+
+            const {subscription} = await fetch("{% url 'stripe_elements_cancel_subscription' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                subscriptionId
+            }),
+            })
+            .then((response) => response.json())
+
+            // Display the status of the subscription after attempting to
+            // cancel.
+            setMessage(`Subscription status: ${subscription.status}`);
+            setMessage(`Redirecting back to account in 7s.`);
+
+
+            // Redirect to the account page.
+            setTimeout(() => {
+            window.location.href = "{% url 'stripe_elements_account' %}";
+            }, 7 * 1000);
+        });
+
+        const setMessage = (message) => {
+            const messagesDiv = document.querySelector('#messages');
+            messagesDiv.innerHTML += "<br>" + message;
+        }
+    });
+
+  </script>
+
+{% endblock %}

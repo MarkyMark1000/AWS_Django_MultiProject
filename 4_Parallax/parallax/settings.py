@@ -32,8 +32,8 @@ print(f'DJANGO_DEBUG: {DEBUG}')
 ALLOWED_HOSTS = ["0.0.0.0",
                  "localhost",
                  "127.0.0.1",
-                 "django-parallax.7t021jc3146ps.eu-west-1.cs.amazonlightsail.com", # lightsail
-                 "contparallax-env.eba-mmwrva77.eu-west-1.elasticbeanstalk.com"] # elastic beanstalk
+                 "django-parallax.6hbnjaadkuqb2.eu-west-2.cs.amazonlightsail.com", # lightsail
+                 "contparallax-env.eba-fkmkqc92.eu-west-2.elasticbeanstalk.com"] # elastic beanstalk
 
 # Append EC2 ip to ALLOWED_HOSTS to prevent unnecessary logs
 # or health degredation.

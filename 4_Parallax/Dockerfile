@@ -35,4 +35,4 @@ RUN python3 manage.py migrate
 # Choose which method to use:
 
 # ENTRYPOINT export DJANGO_DEBUG='True'; python3 /code/manage.py runserver 0.0.0.0:8080
-ENTRYPOINT export DJANGO_DEBUG='False'; gunicorn --bind 0.0.0.0:8080 --workers 3 parallax.wsgi
+ENTRYPOINT export DJANGO_DEBUG='True'; gunicorn --bind 0.0.0.0:8080 --workers 3 parallax.wsgi

@@ -39,7 +39,7 @@ DEBUG = bool(os.environ.get('DJANGO_DEBUG', False))
 
 ALLOWED_HOSTS = ["localhost",
                  "127.0.0.1",
-                 "brokerdata.6hbnjaadkuqb2.eu-west-2.cs.amazonlightsail.com", # lightsail
+                 "django-brokerdata.6hbnjaadkuqb2.eu-west-2.cs.amazonlightsail.com", # lightsail
                  "contparallax-env.eba-fkmkqc92.eu-west-2.elasticbeanstalk.com"] # elastic beanstalk
 
 # Append EC2 ip to ALLOWED_HOSTS to prevent unnecessary logs
@@ -97,14 +97,13 @@ WSGI_APPLICATION = 'brokerdata.wsgi.application'
 
 # Can determine if using test or production database
 API_ENVIRONMENT = str(os.environ.get('API_ENVIRONMENT', 'PROD')).strip().upper()
-print(API_ENVIRONMENT)
 
 if API_ENVIRONMENT=='PROD':
     #  Production Database
     print('*** PROD ***')
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'ENGINE': 'django.db.backends.mysql',
             'NAME': LIVE_DB_NAME,
             'USER': LIVE_DB_USER,
             'PASSWORD': LIVE_DB_PASSWORD,
@@ -117,7 +116,7 @@ elif API_ENVIRONMENT=='LOCAL':
     print('*** TEST/LOCAL ***')
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'ENGINE': 'django.db.backends.mysql',
             'NAME': TEST_DB_NAME,
             'USER': TEST_DB_USER,
             'PASSWORD': TEST_DB_PASSWORD,
@@ -130,7 +129,7 @@ elif API_ENVIRONMENT=='DOCKER':
     print('*** DOCKER ***')
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'ENGINE': 'django.db.backends.mysql',
             'NAME': DOCK_DB_NAME,
             'USER': DOCK_DB_USER,
             'PASSWORD': DOCK_DB_PASSWORD,

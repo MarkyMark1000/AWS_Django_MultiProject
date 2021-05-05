@@ -23,7 +23,7 @@ help:
 	@echo "make run-local-debug	    	- Run project locally in debug mode"
 	@echo "make run-local	    		- Run project locally"
 	@echo "make run-dock	    		- Run project using docker"
-	@echo "make run-prod	    		- Build production version of docker image"
+	@echo "make build-dock-prod	    	- Build production version of docker image"
 	@echo "Testing:"
 	@echo "make test   			- Run the Test in the virtual environment."
 	@echo "make cov-html			- Build HTML coverage report."
@@ -94,16 +94,16 @@ run-dock:
 	@echo "   http://localhost:8080/symbols/"
 	@echo "   http://localhost:8080/marketdata/"
 	@echo ""
-	( docker build --build-arg DJANGO_DEBUG=True --build-arg API_ENVIRONMENT=Docker -t mjw/brokerdata .; docker run -p 8080:8080 mjw/brokerdata; )
+	( docker build -t mjw/brokerdata .; docker run -e DJANGO_DEBUG=True -e API_ENVIRONMENT=Docker -p 8080:8080 mjw/brokerdata; )
 	@echo ""
 
 build-dock-prod:
 	@echo ""
 	@echo "*** build production version of docker (don't run) ***"
 	@echo "  (don't forget to clean up images/containers)"
+	@echo "  (don't forget env variables DJANGO_DEBUG and API_ENVIRONMENT)"
 	@echo ""
-	@echo ""
-	( docker build --build-arg DJANGO_DEBUG=False --build-arg API_ENVIRONMENT=Prod -t mjw/brokerdata .; )
+	( docker build -t mjw/brokerdata .; )
 	@echo ""
 
 test:
